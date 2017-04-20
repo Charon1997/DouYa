@@ -18,12 +18,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import nexuslink.charon.douya.R;
 import nexuslink.charon.douya.bean.Movie;
+import nexuslink.charon.douya.biz.OnRecItemClickListener;
 import nexuslink.charon.douya.ui.adapter.MainPagerAdapter;
 import nexuslink.charon.douya.ui.adapter.MainRecAdapter;
 import nexuslink.charon.douya.ui.base.BaseActivity;
@@ -75,6 +77,17 @@ public class MainActivity extends BaseActivity implements IMainView {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         MainRecAdapter mRecAdapter = new MainRecAdapter(mMovieList);
         mRecyclerView.setAdapter(mRecAdapter);
+        mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                toInf();
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        });
         mViewList.add(view1);
 
         View view2 = LayoutInflater.from(this).inflate(R.layout.recycler_main, null);
@@ -93,7 +106,6 @@ public class MainActivity extends BaseActivity implements IMainView {
             Movie movie = new Movie(R.drawable.test_movie_img,"速度与激情"+i,"Charon"+i,i);
             mMovieList.add(movie);
         }
-
     }
 
 
@@ -135,6 +147,26 @@ public class MainActivity extends BaseActivity implements IMainView {
             }
         });
     }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void toInf() {
+        showLoading();
+        //网络请求
+        hideLoading();
+        Intent intent = new Intent(MainActivity.this, MovieInfActivity.class);
+        startActivity(intent);
+    }
+
 
     @Override
     public void exit() {

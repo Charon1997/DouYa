@@ -18,21 +18,18 @@ import nexuslink.charon.douya.biz.OnRecItemClickListener;
  * Created by Administrator on 2017/4/19.
  */
 
-public class MainRecAdapter extends RecyclerView.Adapter implements OnRecItemClickListener {
+public class MainRecAdapter extends RecyclerView.Adapter   {
     private List<Movie> list; //数据
+    private OnRecItemClickListener onRecItemClickListener = null;
 
     public MainRecAdapter(List<Movie> list) {
         this.list = list;
     }
 
-    @Override
-    public void onItemClick(View view, int position) {
 
-    }
 
-    @Override
-    public void onItemLongClick(View view, int position) {
-
+    public void setOnItemClickListener(OnRecItemClickListener onItemClickListener) {
+        onRecItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -49,14 +46,13 @@ public class MainRecAdapter extends RecyclerView.Adapter implements OnRecItemCli
         ((MyViewHolder) holder).itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClick(v,position);
-
+                onRecItemClickListener.onItemClick(v,position);
             }
         });
         ((MyViewHolder) holder).itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                onItemLongClick(v,position);
+                onRecItemClickListener.onItemLongClick(v,position);
                 return true;
             }
         });

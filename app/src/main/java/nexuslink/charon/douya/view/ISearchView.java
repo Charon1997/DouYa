@@ -5,17 +5,12 @@ package nexuslink.charon.douya.view;
  */
 
 public interface ISearchView {
-    public void search();
+
 
     public void showLoading();
 
     public void hideLoading();
 
-    public void showItem();
-
-    public void hideItem();
-
-    public void clickItem();
-
+    public void toInf();
     public void back();
 }
