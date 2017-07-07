@@ -7,40 +7,44 @@ import android.support.v4.view.ViewPager;
 import android.support.design.widget.TabLayout;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.widget.TableLayout;
-import android.widget.Toast;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import nexuslink.charon.douya.R;
-import nexuslink.charon.douya.bean.Movie;
+import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.OnRecItemClickListener;
+import nexuslink.charon.douya.presenter.MainPresenter;
 import nexuslink.charon.douya.ui.adapter.MainPagerAdapter;
 import nexuslink.charon.douya.ui.adapter.MainRecAdapter;
 import nexuslink.charon.douya.ui.base.BaseActivity;
 import nexuslink.charon.douya.view.IMainView;
 
 public class MainActivity extends BaseActivity implements IMainView {
-    private RecyclerView mRecyclerView;
+
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private Toolbar mToolbar;
     private List<View> mViewList;
     private MainPagerAdapter adapter;
+    private RecyclerView mRecyclerView;
+    private RelativeLayout mRelativeLayout;
+    private ProgressBar mProgressBar;
+    private TextView mTextView;
+    private MainPresenter mainPresenter = new MainPresenter(this);
 
-    //临时数据
-    private List<Movie> mMovieList;
+
 
 
     @Override
@@ -51,61 +55,25 @@ public class MainActivity extends BaseActivity implements IMainView {
     }
 
     private void initView() {
-
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.main_progress_relative);
+        mProgressBar = (ProgressBar) findViewById(R.id.main_progress);
+        mTextView = (TextView) findViewById(R.id.main_text);
         mViewPager = (ViewPager) findViewById(R.id.main_viewpager);
         mTabLayout = (TabLayout) findViewById(R.id.main_tablayout);
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         mToolbar.setTitle("豆芽");
         setSupportActionBar(mToolbar);
-        addDate();
-
-
-
+        mainPresenter.getMovieInTheaters();
         addView();
-
-        adapter = new MainPagerAdapter(mViewList);
-        mViewPager.setAdapter(adapter);
-        mTabLayout.setupWithViewPager(mViewPager);
     }
 
-    private void addView() {
-        mViewList = new ArrayList<>();
-        View view1 = LayoutInflater.from(this).inflate(R.layout.recycler_main, null);
-        mRecyclerView = (RecyclerView) view1.findViewById(R.id.main_recycler);
-        RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        MainRecAdapter mRecAdapter = new MainRecAdapter(mMovieList);
-        mRecyclerView.setAdapter(mRecAdapter);
-        mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                toInf();
-            }
 
-            @Override
-            public void onItemLongClick(View view, int position) {
 
-            }
-        });
-        mViewList.add(view1);
-
-        View view2 = LayoutInflater.from(this).inflate(R.layout.recycler_main, null);
-
-        mViewList.add(view2);
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main_search, menu);
         search(menu);
         return true;
-    }
-    private void addDate() {
-        mMovieList = new ArrayList<>();
-        for (int i = 0 ;i < 6 ; i++) {
-            Movie movie = new Movie(R.drawable.test_movie_img,"速度与激情"+i,"Charon"+i,i);
-            mMovieList.add(movie);
-        }
     }
 
 
@@ -119,7 +87,7 @@ public class MainActivity extends BaseActivity implements IMainView {
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
         searchView.setSubmitButtonEnabled(true);//设置是否显示搜索按钮
-        searchView.setQueryHint("查找");//设置提示信息
+        searchView.setQueryHint("输入想要搜索");//设置提示信息
         searchView.setIconifiedByDefault(true);//设置搜索默认为图标
         //点击事件
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -150,19 +118,41 @@ public class MainActivity extends BaseActivity implements IMainView {
 
     @Override
     public void showLoading() {
+        mRelativeLayout.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
+        mTextView.setVisibility(View.GONE);
+        mRelativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
     }
 
     @Override
     public void hideLoading() {
-
+        mRelativeLayout.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        mTextView.setVisibility(View.GONE);
+        mViewPager.setVisibility(View.VISIBLE);
     }
 
+
+    @Override
+    public void showError() {
+        mProgressBar.setVisibility(View.GONE);
+        mTextView.setVisibility(View.VISIBLE);
+        mRelativeLayout.setVisibility(View.VISIBLE);
+        mRelativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainPresenter.getMovieInTheaters();
+            }
+        });
+        mViewPager.setVisibility(View.GONE);
+    }
     @Override
     public void toInf() {
-        showLoading();
-        //网络请求
-        hideLoading();
         Intent intent = new Intent(MainActivity.this, MovieInfActivity.class);
         startActivity(intent);
     }
@@ -172,4 +162,44 @@ public class MainActivity extends BaseActivity implements IMainView {
     public void exit() {
 
     }
+
+    @Override
+    public void addView() {
+        //设置TabLayout
+        mViewList = new ArrayList<>();
+
+        View view1 = LayoutInflater.from(this).inflate(R.layout.recycler_main, null);
+        mRecyclerView = (RecyclerView) view1.findViewById(R.id.main_recycler);
+        mViewList.add(view1);
+
+        View view2 = LayoutInflater.from(this).inflate(R.layout.recycler_main, null);
+        mViewList.add(view2);
+
+        adapter = new MainPagerAdapter(mViewList);
+        mViewPager.setAdapter(adapter);
+        mTabLayout.setupWithViewPager(mViewPager);
+    }
+
+    @Override
+    public void initView(MovieData data) {
+
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(manager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        MainRecAdapter mRecAdapter = new MainRecAdapter(data,this);
+        mRecyclerView.setAdapter(mRecAdapter);
+        mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                toInf();
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        });
+
+    }
+
 }

@@ -2,19 +2,26 @@ package nexuslink.charon.douya.view;
 
 import android.view.Menu;
 
+import nexuslink.charon.douya.bean.movie.MovieData;
+
 /**
  * Created by Administrator on 2017/4/18.
  */
 
 public interface IMainView {
 
-    public void search(Menu menu);
+    void search(Menu menu);
 
-    public void showLoading();
+    void showLoading();
 
-    public void hideLoading();
+    void hideLoading();
 
-    public void toInf();
+    void toInf();
 
-    public void exit();
+    void exit();
+
+    void addView();
+
+    void initView(MovieData data);
+    void showError();
 }

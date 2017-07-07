@@ -1,5 +1,7 @@
 package nexuslink.charon.douya.view;
 
+import nexuslink.charon.douya.bean.movie.MovieData;
+
 /**
  * Created by Administrator on 2017/4/18.
  */
@@ -7,10 +9,14 @@ package nexuslink.charon.douya.view;
 public interface ISearchView {
 
 
-    public void showLoading();
+    void showLoading();
 
-    public void hideLoading();
+    void hideLoading();
 
-    public void toInf();
-    public void back();
+    void toInf();
+
+
+    void addView(MovieData data);
+
+    void showError();
 }

@@ -17,7 +17,30 @@
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             />
     </android.support.design.widget.AppBarLayout>
-
+    <RelativeLayout
+        android:id="@+id/search_relative"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp"
+        android:background="@color/colorPrimary"
+        android:alpha="0.75"
+        android:visibility="gone">
+        <ProgressBar
+            android:id="@+id/search_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/search_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="主人，好像网络状态有点不好哟"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:visibility="gone"/>
+    </RelativeLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/search_recycler"
         android:layout_width="match_parent"

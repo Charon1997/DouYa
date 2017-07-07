@@ -2,16 +2,20 @@ package nexuslink.charon.douya.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import nexuslink.charon.douya.R;
 import nexuslink.charon.douya.bean.Movie;
+import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.OnRecItemClickListener;
 
 /**
@@ -19,11 +23,13 @@ import nexuslink.charon.douya.biz.OnRecItemClickListener;
  */
 
 public class MainRecAdapter extends RecyclerView.Adapter   {
-    private List<Movie> list; //数据
+    private MovieData list; //数据
     private OnRecItemClickListener onRecItemClickListener = null;
+    private Context context;
 
-    public MainRecAdapter(List<Movie> list) {
+    public MainRecAdapter(MovieData list,Context context) {
         this.list = list;
+        this.context = context;
     }
 
 
@@ -40,9 +46,24 @@ public class MainRecAdapter extends RecyclerView.Adapter   {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        ((MyViewHolder)holder).tv_name.setText(list.get(position).getMovieName());
-        ((MyViewHolder) holder).iv_head.setImageResource(list.get(position).getImg());
-        ((MyViewHolder) holder).tv_protagonist.setText(list.get(position).getActorName());
+        //电影名称
+        ((MyViewHolder)holder).tv_name.setText(list.getSubjects().get(position).getTitle()+"");
+        //用picasso ,如果没得图，用默认的。
+        Picasso.with(context).load(list.getSubjects().get(position).getImages().getMedium()+"").into(((MyViewHolder) holder).iv_head);
+        //主角
+        if (list.getSubjects().get(position).getCasts().size()>0){
+            ((MyViewHolder) holder).tv_cast.setText("主演："+list.getSubjects().get(position).getCasts().get(0).getName()+"");
+            Log.d("123", list.getSubjects().get(position).getCasts().size() + "sizecasts");
+        }
+
+        //导演,就怕没得导演
+        if (list.getSubjects().get(position).getDirectors().size()>0) {
+            Log.d("123", list.getSubjects().get(position).getDirectors().size() + "size");
+            ((MyViewHolder) holder).tv_director.setText("导演：" + list.getSubjects().get(position).getDirectors().get(0).getName() + "");
+        }
+        //评分，还可以加星星
+        ((MyViewHolder)holder).tv_rating.setText(list.getSubjects().get(position).getRating().getAverage()+"");
+
         ((MyViewHolder) holder).itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,20 +81,22 @@ public class MainRecAdapter extends RecyclerView.Adapter   {
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list.getSubjects().size();
     }
 
     private class MyViewHolder extends RecyclerView.ViewHolder{
         private ImageView iv_head;
         private TextView tv_name;
-        private TextView tv_grade;
-        private TextView tv_protagonist;
+        private TextView tv_rating;
+        private TextView tv_cast;
+        private TextView tv_director;
         MyViewHolder(View itemView) {
             super(itemView);
             iv_head = (ImageView) itemView.findViewById(R.id.item_movie_img);
             tv_name = (TextView) itemView.findViewById(R.id.item_movie_name);
-            tv_grade = (TextView) itemView.findViewById(R.id.item_movie_grade);
-            tv_protagonist = (TextView) itemView.findViewById(R.id.item_movie_protagonist);
+            tv_rating = (TextView) itemView.findViewById(R.id.item_movie_rating);
+            tv_cast = (TextView) itemView.findViewById(R.id.item_movie_cast);
+            tv_director = (TextView) itemView.findViewById(R.id.item_movie_director);
         }
     }
 }
