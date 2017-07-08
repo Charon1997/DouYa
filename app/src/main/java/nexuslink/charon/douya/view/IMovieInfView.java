@@ -6,9 +6,15 @@ package nexuslink.charon.douya.view;
 
 public interface IMovieInfView {
     //get信息
-    public String getName();
+    String getName();
 
+    void back();
 
+    void loadView(String backImg,String mainImg,String cast,String director,double rating);
 
-    public void back();
+    void showLoading();
+
+    void hideLoading();
+
+    void showError();
 }

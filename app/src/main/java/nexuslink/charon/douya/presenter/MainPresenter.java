@@ -2,6 +2,7 @@ package nexuslink.charon.douya.presenter;
 import android.os.Handler;
 import android.util.Log;
 
+import nexuslink.charon.douya.bean.Movie;
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.HttpService;
 import nexuslink.charon.douya.view.IMainView;
@@ -16,6 +17,7 @@ public class MainPresenter {
     private final static String TAG = MainPresenter.class.getSimpleName();
     private IMainView mainView ;
     private Subscriber<MovieData> subscriber;
+    private MovieData myData;
     public MainPresenter(IMainView mainView) {
         this.mainView = mainView;
     }
@@ -46,6 +48,7 @@ public class MainPresenter {
 
             @Override
             public void onNext(MovieData movieData) {
+                myData = movieData;
                 if (movieData.getCount() != 0) {
                     Log.d(TAG, "加载数据");
                     mainView.initView(movieData);
@@ -58,8 +61,11 @@ public class MainPresenter {
         HttpService.getInstance().getInTheaters(subscriber);
     }
 
-    public void onDestroy() {
-
+    public void clickItem(int position) {
+        String id = myData.getSubjects().get(position).getId();
+        String name = myData.getSubjects().get(position).getTitle();
+        Log.d(TAG, "id:"+id);
+        mainView.toMovieInf(id,name);
     }
 
 }

@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.IDN;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,10 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
     private int current;
     private SearchPresenter searchPresenter = new SearchPresenter(this);
     private String searchString;
-
+    public final static String MOVIE_ID = "movieId";
+    public final static String MOVIE_NAME = "movieName";
+    public final static String BOOK_ID = "bookId";
+    public final static String BOOK_NAME = "bookName";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,9 +112,20 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
         });
     }
     @Override
-    public void toInf() {
+    public void toMovieInf(String id,String name) {
         //判断是读书还是电影
-        Intent intent = new Intent(SearchResultActivity.this,MovieInfActivity.class);
+        Intent intent = null;
+        Bundle bundle = new Bundle();
+        if (current == 0){
+            bundle.putString(MOVIE_ID, id);
+            bundle.putString(MOVIE_NAME, name);
+            intent = new Intent(SearchResultActivity.this,MovieInfActivity.class);
+            intent.putExtras(bundle);
+        } else {
+            //图书
+            bundle.putString(BOOK_ID, id);
+            bundle.putString(BOOK_NAME, name);
+        }
         startActivity(intent);
     }
 
@@ -126,9 +141,8 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
         mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                toInf();
+                searchPresenter.clickItem(position);
             }
-
             @Override
             public void onItemLongClick(View view, int position) {
 

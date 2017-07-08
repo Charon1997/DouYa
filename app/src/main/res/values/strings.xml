@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">DouYa</string>
     <string name="search">搜索</string>
+    <string name="errorInternet">主人，好像网络状态有点不好哟</string>
+    <string name="no_cast">暂无主角</string>
+    <string name="no_name">暂无名字</string>
+    <string name="no_director">暂无导演</string>
+    <string name="no_rating">暂无评分</string>
 </resources>

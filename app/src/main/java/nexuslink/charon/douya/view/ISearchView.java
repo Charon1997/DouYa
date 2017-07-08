@@ -13,7 +13,7 @@ public interface ISearchView {
 
     void hideLoading();
 
-    void toInf();
+    void toMovieInf(String id,String name);
 
 
     void addView(MovieData data);

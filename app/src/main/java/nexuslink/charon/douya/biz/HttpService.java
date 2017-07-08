@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import nexuslink.charon.douya.api.MovieService;
 import nexuslink.charon.douya.bean.movie.MovieData;
+import nexuslink.charon.douya.bean.movie.MovieInf;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -60,6 +61,14 @@ public class HttpService {
 
     public void getSearchItem(Subscriber<MovieData> subscriber,String searchString) {
         movieService.getSearchMovie(searchString)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+    }
+
+    public void getMovieById(Subscriber<MovieInf> subscriber, String id) {
+        movieService.getSearchById(id)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

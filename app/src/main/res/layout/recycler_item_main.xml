@@ -11,8 +11,6 @@
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-
-
         app:cardCornerRadius="2dp"
         app:contentPadding="8dp"
         >
@@ -29,7 +27,7 @@
             android:layout_marginLeft="80dp"
             android:layout_marginTop="24dp"
             android:alpha="0.5"
-            android:text="主角：Charon"
+            android:text="@string/no_cast"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="16sp" />
         <TextView
@@ -39,7 +37,7 @@
             android:layout_marginLeft="80dp"
             android:textColor="@color/colorPrimaryDark"
             android:alpha="0.87"
-            android:text="速度与激情8"
+            android:text="@string/no_name"
             android:textSize="18sp"/>
 
         <TextView
@@ -50,7 +48,7 @@
             android:layout_marginTop="48dp"
             android:textColor="@color/colorPrimaryDark"
             android:alpha="0.5"
-            android:text="导演：CK"
+            android:text="@string/no_director"
             android:textSize="16sp"/>
         <TextView
             android:id="@+id/item_movie_rating"
@@ -60,7 +58,7 @@
             android:layout_marginTop="72dp"
             android:textColor="@color/colorPrimaryDark"
             android:alpha="0.5"
-            android:text="评分：8.9"
+            android:text="@string/no_rating"
             android:textSize="16sp"/>
     </android.support.v7.widget.CardView>
 

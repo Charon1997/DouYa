@@ -97,9 +97,9 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/movie_inf_text_castname"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:text="asdfas" />
+                android:layout_height="80dp" />
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

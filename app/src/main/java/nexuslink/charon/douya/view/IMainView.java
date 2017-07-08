@@ -16,7 +16,7 @@ public interface IMainView {
 
     void hideLoading();
 
-    void toInf();
+    void toMovieInf(String id,String name);
 
     void exit();
 

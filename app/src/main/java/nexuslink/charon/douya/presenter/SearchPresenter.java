@@ -16,6 +16,7 @@ public class SearchPresenter {
     private final static String TAG = MainPresenter.class.getSimpleName();
     private ISearchView searchView ;
     private Subscriber<MovieData> subscriber;
+    private MovieData myData;
     public SearchPresenter(ISearchView searchView) {
         this.searchView = searchView;
     }
@@ -39,11 +40,11 @@ public class SearchPresenter {
                     }
                 }, 1000);
                 Log.d(TAG, "加载数据失败，Error:"+e.toString());
-
             }
 
             @Override
             public void onNext(MovieData movieData) {
+                myData = movieData;
                 Log.d(TAG, "加载数据");
                 if (movieData.getCount() != 0) {
                     searchView.addView(movieData);
@@ -53,8 +54,13 @@ public class SearchPresenter {
                 }
             }
         };
-
         HttpService.getInstance().getSearchItem(subscriber,searchString);
+    }
 
+    public void clickItem(int position) {
+        String id = myData.getSubjects().get(position).getId();
+        String name = myData.getSubjects().get(position).getTitle();
+        Log.d(TAG, "id:"+id);
+        searchView.toMovieInf(id,name);
     }
 }

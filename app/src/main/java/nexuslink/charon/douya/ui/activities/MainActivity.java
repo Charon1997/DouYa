@@ -31,6 +31,9 @@ import nexuslink.charon.douya.ui.adapter.MainRecAdapter;
 import nexuslink.charon.douya.ui.base.BaseActivity;
 import nexuslink.charon.douya.view.IMainView;
 
+import static nexuslink.charon.douya.ui.activities.SearchResultActivity.MOVIE_ID;
+import static nexuslink.charon.douya.ui.activities.SearchResultActivity.MOVIE_NAME;
+
 public class MainActivity extends BaseActivity implements IMainView {
 
     private ViewPager mViewPager;
@@ -152,8 +155,19 @@ public class MainActivity extends BaseActivity implements IMainView {
         mViewPager.setVisibility(View.GONE);
     }
     @Override
-    public void toInf() {
-        Intent intent = new Intent(MainActivity.this, MovieInfActivity.class);
+    public void toMovieInf(String id,String name) {
+        int currentNum = mViewPager.getCurrentItem();
+        Intent intent = null ;
+        Bundle bundle = new Bundle();
+        if (currentNum == 0) {
+            bundle.putString(MOVIE_ID, id);
+            bundle.putString(MOVIE_NAME, name);
+            intent = new Intent(MainActivity.this, MovieInfActivity.class);
+            intent.putExtras(bundle);
+        } else {
+
+        }
+
         startActivity(intent);
     }
 
@@ -191,7 +205,7 @@ public class MainActivity extends BaseActivity implements IMainView {
         mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                toInf();
+                mainPresenter.clickItem(position);
             }
 
             @Override
