@@ -1,5 +1,9 @@
 package nexuslink.charon.douya.view;
 
+import java.util.List;
+
+import nexuslink.charon.douya.bean.movie.MovieInf;
+
 /**
  * Created by Administrator on 2017/4/18.
  */
@@ -10,11 +14,15 @@ public interface IMovieInfView {
 
     void back();
 
-    void loadView(String backImg,String mainImg,String cast,String director,double rating);
+    void loadView(String backImg, String mainImg, String cast, String director, double rating
+    , String title, String originalTitle, String year, String country, String genres,int ratingCount
+    ,String summary);
 
     void showLoading();
 
     void hideLoading();
 
     void showError();
+
+    void initView(MovieInf data);
 }

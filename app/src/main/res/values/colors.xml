@@ -4,5 +4,7 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#535353</color>
     <color name="colorBackground">#71000000</color>
-
+    <color name="colorTextBlue">#3d95d4</color>
+    <color name="colorCutOffRule">#a2cfcfcf</color>
+    <color name="colorTextLightGray">#d6bfbfbf</color>
 </resources>
