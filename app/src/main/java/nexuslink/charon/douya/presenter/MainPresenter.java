@@ -3,6 +3,8 @@ import android.os.Handler;
 import android.util.Log;
 
 import nexuslink.charon.douya.bean.Movie;
+import nexuslink.charon.douya.bean.book.BookData;
+import nexuslink.charon.douya.bean.book.BookInf;
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.HttpService;
 import nexuslink.charon.douya.view.IMainView;
@@ -16,15 +18,17 @@ import rx.Subscriber;
 public class MainPresenter {
     private final static String TAG = MainPresenter.class.getSimpleName();
     private IMainView mainView ;
-    private Subscriber<MovieData> subscriber;
-    private MovieData myData;
+    private Subscriber<MovieData> movieSubscriber;
+    private Subscriber<BookData> bookSubscriber;
+    private MovieData myMovieData;
+    private BookData myBookData;
     public MainPresenter(IMainView mainView) {
         this.mainView = mainView;
     }
 
     public void getMovieInTheaters() {
         mainView.showLoading();
-        subscriber = new Subscriber<MovieData>() {
+        movieSubscriber = new Subscriber<MovieData>() {
             @Override
             public void onCompleted() {
                 Log.d(TAG, "加载数据完成");
@@ -48,22 +52,45 @@ public class MainPresenter {
 
             @Override
             public void onNext(MovieData movieData) {
-                myData = movieData;
+                myMovieData = movieData;
                 if (movieData.getCount() != 0) {
                     Log.d(TAG, "加载数据");
-                    mainView.initView(movieData);
+                    mainView.initMovieView(movieData);
                 } else {
                     Log.d(TAG, "加载数据为0");
                 }
             }
         };
 
-        HttpService.getInstance().getInTheaters(subscriber);
+        HttpService.getInstance().getInTheaters(movieSubscriber);
     }
 
-    public void clickItem(int position) {
-        String id = myData.getSubjects().get(position).getId();
-        String name = myData.getSubjects().get(position).getTitle();
+    public void getBookItem() {
+        bookSubscriber = new Subscriber<BookData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(BookData bookData) {
+                myBookData = bookData;
+                if (bookData.getBooks().size() != 0)
+                mainView.initBookView(bookData);
+            }
+        };
+        HttpService.getInstance().getSearchBookByTag(bookSubscriber,"小说");
+
+    }
+
+    public void clickMovieItem(int position) {
+        String id = myMovieData.getSubjects().get(position).getId();
+        String name = myMovieData.getSubjects().get(position).getTitle();
         Log.d(TAG, "id:"+id);
         mainView.toMovieInf(id,name);
     }

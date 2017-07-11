@@ -12,22 +12,26 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import nexuslink.charon.douya.R;
+import nexuslink.charon.douya.bean.book.BookData;
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.OnRecItemClickListener;
 import nexuslink.charon.douya.presenter.MainPresenter;
+import nexuslink.charon.douya.ui.adapter.MainBookRecAdapter;
+import nexuslink.charon.douya.ui.adapter.MainMovieRecAdapter;
 import nexuslink.charon.douya.ui.adapter.MainPagerAdapter;
-import nexuslink.charon.douya.ui.adapter.MainRecAdapter;
 import nexuslink.charon.douya.ui.base.BaseActivity;
 import nexuslink.charon.douya.view.IMainView;
 
@@ -41,12 +45,12 @@ public class MainActivity extends BaseActivity implements IMainView {
     private Toolbar mToolbar;
     private List<View> mViewList;
     private MainPagerAdapter adapter;
-    private RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView1,mRecyclerView2;
     private RelativeLayout mRelativeLayout;
     private ProgressBar mProgressBar;
     private TextView mTextView;
     private MainPresenter mainPresenter = new MainPresenter(this);
-
+    private long mExitTime ;
 
 
 
@@ -67,6 +71,7 @@ public class MainActivity extends BaseActivity implements IMainView {
         mToolbar.setTitle("豆芽");
         setSupportActionBar(mToolbar);
         mainPresenter.getMovieInTheaters();
+        mainPresenter.getBookItem();
         addView();
     }
 
@@ -174,7 +179,13 @@ public class MainActivity extends BaseActivity implements IMainView {
 
     @Override
     public void exit() {
-
+        if ((System.currentTimeMillis() - mExitTime) > 2000) {
+            Toast.makeText(MainActivity.this, "再按一次退出豆芽", Toast.LENGTH_SHORT).show();
+            mExitTime = System.currentTimeMillis();
+        } else {
+            finish();
+            System.exit(0);
+        }
     }
 
     @Override
@@ -183,10 +194,11 @@ public class MainActivity extends BaseActivity implements IMainView {
         mViewList = new ArrayList<>();
 
         View view1 = LayoutInflater.from(this).inflate(R.layout.recycler_main, null);
-        mRecyclerView = (RecyclerView) view1.findViewById(R.id.main_recycler);
+        mRecyclerView1 = (RecyclerView) view1.findViewById(R.id.main_recycler);
         mViewList.add(view1);
 
         View view2 = LayoutInflater.from(this).inflate(R.layout.recycler_main, null);
+        mRecyclerView2 = (RecyclerView) view2.findViewById(R.id.main_recycler);
         mViewList.add(view2);
 
         adapter = new MainPagerAdapter(mViewList);
@@ -195,24 +207,51 @@ public class MainActivity extends BaseActivity implements IMainView {
     }
 
     @Override
-    public void initView(MovieData data) {
-
+    public void initMovieView(MovieData data) {
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        MainRecAdapter mRecAdapter = new MainRecAdapter(data,this);
-        mRecyclerView.setAdapter(mRecAdapter);
+        mRecyclerView1.setLayoutManager(manager);
+        mRecyclerView1.setItemAnimator(new DefaultItemAnimator());
+        MainMovieRecAdapter mRecAdapter = new MainMovieRecAdapter(data,this);
+        mRecyclerView1.setAdapter(mRecAdapter);
         mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                mainPresenter.clickItem(position);
+                mainPresenter.clickMovieItem(position);
             }
-
             @Override
             public void onItemLongClick(View view, int position) {
 
             }
         });
+    }
+
+    @Override
+    public void initBookView(BookData data) {
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
+        mRecyclerView2.setLayoutManager(manager);
+        mRecyclerView2.setItemAnimator(new DefaultItemAnimator());
+        MainBookRecAdapter mRecAdapter = new MainBookRecAdapter(data,this);
+        mRecyclerView2.setAdapter(mRecAdapter);
+        mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                //mainPresenter.clickBookItem(position);
+            }
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            exit();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 }

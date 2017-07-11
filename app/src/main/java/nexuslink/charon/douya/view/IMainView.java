@@ -2,6 +2,8 @@ package nexuslink.charon.douya.view;
 
 import android.view.Menu;
 
+import nexuslink.charon.douya.bean.Movie;
+import nexuslink.charon.douya.bean.book.BookData;
 import nexuslink.charon.douya.bean.movie.MovieData;
 
 /**
@@ -22,6 +24,8 @@ public interface IMainView {
 
     void addView();
 
-    void initView(MovieData data);
+    void initMovieView(MovieData data);
+
+    void initBookView(BookData data);
     void showError();
 }

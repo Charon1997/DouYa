@@ -22,12 +22,12 @@ import nexuslink.charon.douya.biz.OnRecItemClickListener;
  * Created by Administrator on 2017/4/19.
  */
 
-public class MainRecAdapter extends RecyclerView.Adapter   {
+public class MainMovieRecAdapter extends RecyclerView.Adapter   {
     private MovieData list; //数据
     private OnRecItemClickListener onRecItemClickListener = null;
     private Context context;
 
-    public MainRecAdapter(MovieData list,Context context) {
+    public MainMovieRecAdapter(MovieData list,Context context) {
         this.list = list;
         this.context = context;
     }
@@ -62,7 +62,7 @@ public class MainRecAdapter extends RecyclerView.Adapter   {
             ((MyViewHolder) holder).tv_director.setText("导演：" + list.getSubjects().get(position).getDirectors().get(0).getName() + "");
         }
         //评分，还可以加星星
-        ((MyViewHolder)holder).tv_rating.setText(list.getSubjects().get(position).getRating().getAverage()+"");
+        ((MyViewHolder)holder).tv_rating.setText("评分："+list.getSubjects().get(position).getRating().getAverage()+"");
 
         ((MyViewHolder) holder).itemView.setOnClickListener(new View.OnClickListener() {
             @Override

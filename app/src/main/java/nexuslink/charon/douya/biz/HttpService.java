@@ -2,7 +2,10 @@ package nexuslink.charon.douya.biz;
 
 import java.util.concurrent.TimeUnit;
 
+import nexuslink.charon.douya.api.BookService;
 import nexuslink.charon.douya.api.MovieService;
+import nexuslink.charon.douya.bean.book.BookData;
+import nexuslink.charon.douya.bean.book.BookInf;
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.bean.movie.MovieInf;
 import okhttp3.OkHttpClient;
@@ -23,6 +26,7 @@ public class HttpService {
     private static final String BASE_URL = " https://api.douban.com/";
     Retrofit retrofit;
     MovieService movieService;
+    BookService bookService;
 
     private HttpService() {
         //手动创建一个OkHttpClient并设置超时时间
@@ -37,6 +41,7 @@ public class HttpService {
                 .build();
 
         movieService = retrofit.create(MovieService.class);
+        bookService = retrofit.create(BookService.class);
     }
 
 
@@ -59,7 +64,7 @@ public class HttpService {
                 .subscribe(subscriber);
     }
 
-    public void getSearchItem(Subscriber<MovieData> subscriber,String searchString) {
+    public void getSearchMovie(Subscriber<MovieData> subscriber,String searchString) {
         movieService.getSearchMovie(searchString)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -69,6 +74,38 @@ public class HttpService {
 
     public void getMovieById(Subscriber<MovieInf> subscriber, String id) {
         movieService.getSearchById(id)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+    }
+
+    public void getBookById(Subscriber<BookInf> subscriber,String id) {
+        bookService.getSearchById(id)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+    }
+
+    public void getBookByIsbn(Subscriber<BookInf> subscriber,String isbn) {
+        bookService.getSearchByIsbn(isbn)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+    }
+
+    public void getSearchBook(Subscriber<BookData> subscriber, String text) {
+        bookService.getSearchByQ(text)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+    }
+
+    public void getSearchBookByTag(Subscriber<BookData> subscriber, String tag) {
+        bookService.getSearchByTag(tag)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

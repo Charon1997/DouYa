@@ -22,6 +22,7 @@ public class MovieInfRecAdapter extends RecyclerView.Adapter {
     private MovieInf list; //数据
     private OnRecItemClickListener onRecItemClickListener = null;
     private Context context;
+    private final static String TAG = MovieInfRecAdapter.class.getSimpleName();
 
     public MovieInfRecAdapter(Context context, MovieInf list) {
         this.context = context;
@@ -39,28 +40,45 @@ public class MovieInfRecAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (position < list.getDirectors().size()) {
-            ((MyViewHolder)holder).tv_name.setText(list.getDirectors().get(position).getName());
-            ((MyViewHolder)holder).tv_duty.setText("导演");
-            Picasso.with(context).load(list.getDirectors().get(position).getAvatars().getLarge()).into(((MyViewHolder)holder).iv_head);
-
-        } else  {
-            ((MyViewHolder)holder).tv_name.setText(list.getCasts().get(position-list.getDirectors().size()).getName());
-            ((MyViewHolder)holder).tv_duty.setText("演员");
-            Picasso.with(context).load(list.getCasts().get(position-list.getDirectors().size()).getAvatars().getLarge()).into(((MyViewHolder)holder).iv_head);
+            ((MyViewHolder) holder).tv_name.setText(list.getDirectors().get(position).getName());
+            ((MyViewHolder) holder).tv_duty.setText("导演");
+            if (list.getDirectors().get(position).getAvatars() != null) {
+                Picasso.with(context).load(list.getDirectors().get(position).getAvatars().getLarge()).into(((MyViewHolder) holder).iv_head);
+            }
+        } else {
+            ((MyViewHolder) holder).tv_name.setText(list.getCasts().get(position - list.getDirectors().size()).getName());
+            ((MyViewHolder) holder).tv_duty.setText("演员");
+            if (list.getCasts().get(position - list.getDirectors().size()).getAvatars() != null) {
+                Picasso.with(context).load(list.getCasts().get(position - list.getDirectors().size()).getAvatars().getLarge()).into(((MyViewHolder) holder).iv_head);
+            }
         }
+        ((MovieInfRecAdapter.MyViewHolder) holder).itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onRecItemClickListener.onItemClick(v, position);
+            }
+        });
+        ((MovieInfRecAdapter.MyViewHolder) holder).itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onRecItemClickListener.onItemLongClick(v, position);
+                return true;
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return list.getCasts().size()+list.getDirectors().size();
+        return list.getCasts().size() + list.getDirectors().size();
     }
 
-    private class MyViewHolder extends RecyclerView.ViewHolder{
+    private class MyViewHolder extends RecyclerView.ViewHolder {
         private ImageView iv_head;
         private TextView tv_name;
         private TextView tv_duty;
+
         MyViewHolder(View itemView) {
             super(itemView);
             iv_head = (ImageView) itemView.findViewById(R.id.item_movie_cast_img);

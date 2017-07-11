@@ -2,11 +2,13 @@ package nexuslink.charon.douya.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -23,10 +25,9 @@ import nexuslink.charon.douya.bean.Movie;
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.OnRecItemClickListener;
 import nexuslink.charon.douya.presenter.SearchPresenter;
-import nexuslink.charon.douya.ui.adapter.MainPagerAdapter;
-import nexuslink.charon.douya.ui.adapter.MainRecAdapter;
+import nexuslink.charon.douya.ui.adapter.MainMovieRecAdapter;
 import nexuslink.charon.douya.ui.base.BaseActivity;
-import nexuslink.charon.douya.view.IMainView;
+import nexuslink.charon.douya.ui.provider.SearchProvider;
 import nexuslink.charon.douya.view.ISearchView;
 
 /**
@@ -53,8 +54,22 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
         searchString = getIntent().getStringExtra("searchContent");
         current = getIntent().getIntExtra("currentNum",-1);
 //        Toast.makeText(this, SearchString, Toast.LENGTH_SHORT).show();
+        saveDate();
         initView();
 
+    }
+
+    private void saveDate() {
+        //保存搜索
+        Log.d("Search", "saveDate");
+        SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,SearchProvider.AUTHORITY,SearchProvider.MODE);
+        suggestions.saveRecentQuery(searchString,null);
+    }
+
+    public void clearHistory() {
+        SearchRecentSuggestions suggestions=new SearchRecentSuggestions(this,
+                SearchProvider.AUTHORITY,SearchProvider.MODE);
+        suggestions.clearHistory();
     }
 
     private void initView() {
@@ -132,11 +147,11 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
 
 
     @Override
-    public void addView(MovieData data) {
+    public void addMovieView(MovieData data) {
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        MainRecAdapter mRecAdapter = new MainRecAdapter(data,this);
+        MainMovieRecAdapter mRecAdapter = new MainMovieRecAdapter(data,this);
         mRecyclerView.setAdapter(mRecAdapter);
         mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
             @Override

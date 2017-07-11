@@ -16,7 +16,7 @@ public interface ISearchView {
     void toMovieInf(String id,String name);
 
 
-    void addView(MovieData data);
+    void addMovieView(MovieData data);
 
     void showError();
 }

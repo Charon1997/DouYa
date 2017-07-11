@@ -47,14 +47,14 @@ public class SearchPresenter {
                 myData = movieData;
                 Log.d(TAG, "加载数据");
                 if (movieData.getCount() != 0) {
-                    searchView.addView(movieData);
+                    searchView.addMovieView(movieData);
                     Log.d(TAG, "count" + movieData.getCount()+"size"+movieData.getSubjects().size());
                 } else {
                     Log.d(TAG, "加载数据为0");
                 }
             }
         };
-        HttpService.getInstance().getSearchItem(subscriber,searchString);
+        HttpService.getInstance().getSearchMovie(subscriber,searchString);
     }
 
     public void clickItem(int position) {
