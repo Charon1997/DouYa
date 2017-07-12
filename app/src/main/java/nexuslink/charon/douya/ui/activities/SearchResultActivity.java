@@ -9,22 +9,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.net.IDN;
-import java.util.ArrayList;
-import java.util.List;
 
 import nexuslink.charon.douya.R;
-import nexuslink.charon.douya.bean.Movie;
+import nexuslink.charon.douya.bean.book.BookData;
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.OnRecItemClickListener;
 import nexuslink.charon.douya.presenter.SearchPresenter;
+import nexuslink.charon.douya.ui.adapter.MainBookRecAdapter;
 import nexuslink.charon.douya.ui.adapter.MainMovieRecAdapter;
 import nexuslink.charon.douya.ui.base.BaseActivity;
 import nexuslink.charon.douya.ui.provider.SearchProvider;
@@ -47,12 +42,13 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
     public final static String MOVIE_NAME = "movieName";
     public final static String BOOK_ID = "bookId";
     public final static String BOOK_NAME = "bookName";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         searchString = getIntent().getStringExtra("searchContent");
-        current = getIntent().getIntExtra("currentNum",-1);
+        current = getIntent().getIntExtra("currentNum", -1);
 //        Toast.makeText(this, SearchString, Toast.LENGTH_SHORT).show();
         saveDate();
         initView();
@@ -62,13 +58,13 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
     private void saveDate() {
         //保存搜索
         Log.d("Search", "saveDate");
-        SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,SearchProvider.AUTHORITY,SearchProvider.MODE);
-        suggestions.saveRecentQuery(searchString,null);
+        SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, SearchProvider.AUTHORITY, SearchProvider.MODE);
+        suggestions.saveRecentQuery(searchString, null);
     }
 
     public void clearHistory() {
-        SearchRecentSuggestions suggestions=new SearchRecentSuggestions(this,
-                SearchProvider.AUTHORITY,SearchProvider.MODE);
+        SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                SearchProvider.AUTHORITY, SearchProvider.MODE);
         suggestions.clearHistory();
     }
 
@@ -83,6 +79,7 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
             searchPresenter.getMovieInTheaters(searchString);
         } else if (current == 1) {
             mToolbar.setTitle("读书");
+            searchPresenter.getSearchBook(searchString);
         }
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -126,24 +123,28 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
             }
         });
     }
+
     @Override
-    public void toMovieInf(String id,String name) {
+    public void toMovieInf(String id, String name) {
         //判断是读书还是电影
-        Intent intent = null;
         Bundle bundle = new Bundle();
-        if (current == 0){
-            bundle.putString(MOVIE_ID, id);
-            bundle.putString(MOVIE_NAME, name);
-            intent = new Intent(SearchResultActivity.this,MovieInfActivity.class);
-            intent.putExtras(bundle);
-        } else {
-            //图书
-            bundle.putString(BOOK_ID, id);
-            bundle.putString(BOOK_NAME, name);
-        }
+        bundle.putString(MOVIE_ID, id);
+        bundle.putString(MOVIE_NAME, name);
+        Intent intent = new Intent(SearchResultActivity.this, MovieInfActivity.class);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
+    @Override
+    public void toBookInf(String id, String name) {
+        //图书
+        Bundle bundle = new Bundle();
+        bundle.putString(BOOK_ID, id);
+        bundle.putString(BOOK_NAME, name);
+        Intent intent = new Intent(SearchResultActivity.this, BookInfActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
 
 
     @Override
@@ -151,12 +152,12 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        MainMovieRecAdapter mRecAdapter = new MainMovieRecAdapter(data,this);
+        MainMovieRecAdapter mRecAdapter = new MainMovieRecAdapter(data, this);
         mRecyclerView.setAdapter(mRecAdapter);
         mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                searchPresenter.clickItem(position);
+                searchPresenter.clickMovieItem(position);
             }
             @Override
             public void onItemLongClick(View view, int position) {
@@ -165,5 +166,22 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
         });
     }
 
+    @Override
+    public void addBookView(BookData data) {
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(manager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        MainBookRecAdapter mRecAdapter = new MainBookRecAdapter(data,this);
+        mRecyclerView.setAdapter(mRecAdapter);
+        mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                searchPresenter.clickBookItem(position);
+            }
+            @Override
+            public void onItemLongClick(View view, int position) {
 
+            }
+        });
+    }
 }

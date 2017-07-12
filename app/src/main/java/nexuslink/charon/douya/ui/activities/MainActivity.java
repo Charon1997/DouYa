@@ -26,6 +26,7 @@ import java.util.List;
 
 import nexuslink.charon.douya.R;
 import nexuslink.charon.douya.bean.book.BookData;
+import nexuslink.charon.douya.bean.book.BookTag;
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.OnRecItemClickListener;
 import nexuslink.charon.douya.presenter.MainPresenter;
@@ -35,6 +36,8 @@ import nexuslink.charon.douya.ui.adapter.MainPagerAdapter;
 import nexuslink.charon.douya.ui.base.BaseActivity;
 import nexuslink.charon.douya.view.IMainView;
 
+import static nexuslink.charon.douya.ui.activities.SearchResultActivity.BOOK_ID;
+import static nexuslink.charon.douya.ui.activities.SearchResultActivity.BOOK_NAME;
 import static nexuslink.charon.douya.ui.activities.SearchResultActivity.MOVIE_ID;
 import static nexuslink.charon.douya.ui.activities.SearchResultActivity.MOVIE_NAME;
 
@@ -45,13 +48,12 @@ public class MainActivity extends BaseActivity implements IMainView {
     private Toolbar mToolbar;
     private List<View> mViewList;
     private MainPagerAdapter adapter;
-    private RecyclerView mRecyclerView1,mRecyclerView2;
+    private RecyclerView mRecyclerView1, mRecyclerView2;
     private RelativeLayout mRelativeLayout;
     private ProgressBar mProgressBar;
     private TextView mTextView;
     private MainPresenter mainPresenter = new MainPresenter(this);
-    private long mExitTime ;
-
+    private long mExitTime;
 
 
     @Override
@@ -70,12 +72,14 @@ public class MainActivity extends BaseActivity implements IMainView {
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         mToolbar.setTitle("豆芽");
         setSupportActionBar(mToolbar);
-        mainPresenter.getMovieInTheaters();
-        mainPresenter.getBookItem();
         addView();
+        mainPresenter.getMovieInTheaters();
+        mainPresenter.getBookItem(chooseTag());
     }
 
-
+    public String chooseTag() {
+        return BookTag.BOOK_TAG[(int) (Math.random() * BookTag.BOOK_TAG.length)];
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -83,7 +87,6 @@ public class MainActivity extends BaseActivity implements IMainView {
         search(menu);
         return true;
     }
-
 
 
     @Override
@@ -102,14 +105,14 @@ public class MainActivity extends BaseActivity implements IMainView {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (query.length() > 0) {
-                    Log.e("123onQueryTextSubmit","我是点击回车按钮");
+                    Log.e("123onQueryTextSubmit", "我是点击回车按钮");
                     searchView.setIconified(true);
                     int currentNum = mViewPager.getCurrentItem();
 
                     Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString("searchContent",query);
-                    bundle.putInt("currentNum",currentNum);
+                    bundle.putString("searchContent", query);
+                    bundle.putInt("currentNum", currentNum);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -118,7 +121,7 @@ public class MainActivity extends BaseActivity implements IMainView {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.e("123onQueryTextChange","我是内容改变");
+                Log.e("123onQueryTextChange", "我是内容改变");
                 return false;
             }
         });
@@ -129,6 +132,8 @@ public class MainActivity extends BaseActivity implements IMainView {
         mRelativeLayout.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
         mTextView.setVisibility(View.GONE);
+        mRecyclerView1.setVisibility(View.GONE);
+        mRecyclerView2.setVisibility(View.GONE);
         mRelativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,6 +147,8 @@ public class MainActivity extends BaseActivity implements IMainView {
         mRelativeLayout.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
         mTextView.setVisibility(View.GONE);
+        mRecyclerView1.setVisibility(View.VISIBLE);
+        mRecyclerView2.setVisibility(View.VISIBLE);
         mViewPager.setVisibility(View.VISIBLE);
     }
 
@@ -151,6 +158,9 @@ public class MainActivity extends BaseActivity implements IMainView {
         mProgressBar.setVisibility(View.GONE);
         mTextView.setVisibility(View.VISIBLE);
         mRelativeLayout.setVisibility(View.VISIBLE);
+        mRecyclerView1.setVisibility(View.GONE);
+        mRecyclerView2.setVisibility(View.GONE);
+
         mRelativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,19 +169,27 @@ public class MainActivity extends BaseActivity implements IMainView {
         });
         mViewPager.setVisibility(View.GONE);
     }
-    @Override
-    public void toMovieInf(String id,String name) {
-        int currentNum = mViewPager.getCurrentItem();
-        Intent intent = null ;
-        Bundle bundle = new Bundle();
-        if (currentNum == 0) {
-            bundle.putString(MOVIE_ID, id);
-            bundle.putString(MOVIE_NAME, name);
-            intent = new Intent(MainActivity.this, MovieInfActivity.class);
-            intent.putExtras(bundle);
-        } else {
 
-        }
+    @Override
+    public void toMovieInf(String id, String name) {
+        Bundle bundle = new Bundle();
+
+        bundle.putString(MOVIE_ID, id);
+        bundle.putString(MOVIE_NAME, name);
+        Intent intent = new Intent(MainActivity.this, MovieInfActivity.class);
+        intent.putExtras(bundle);
+
+        startActivity(intent);
+    }
+
+    @Override
+    public void toBookInf(String id, String name) {
+        Bundle bundle = new Bundle();
+
+        bundle.putString(BOOK_ID, id);
+        bundle.putString(BOOK_NAME, name);
+        Intent intent = new Intent(MainActivity.this, BookInfActivity.class);
+        intent.putExtras(bundle);
 
         startActivity(intent);
     }
@@ -211,13 +229,14 @@ public class MainActivity extends BaseActivity implements IMainView {
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
         mRecyclerView1.setLayoutManager(manager);
         mRecyclerView1.setItemAnimator(new DefaultItemAnimator());
-        MainMovieRecAdapter mRecAdapter = new MainMovieRecAdapter(data,this);
+        MainMovieRecAdapter mRecAdapter = new MainMovieRecAdapter(data, this);
         mRecyclerView1.setAdapter(mRecAdapter);
         mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 mainPresenter.clickMovieItem(position);
             }
+
             @Override
             public void onItemLongClick(View view, int position) {
 
@@ -230,13 +249,14 @@ public class MainActivity extends BaseActivity implements IMainView {
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
         mRecyclerView2.setLayoutManager(manager);
         mRecyclerView2.setItemAnimator(new DefaultItemAnimator());
-        MainBookRecAdapter mRecAdapter = new MainBookRecAdapter(data,this);
+        MainBookRecAdapter mRecAdapter = new MainBookRecAdapter(data, this);
         mRecyclerView2.setAdapter(mRecAdapter);
         mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                //mainPresenter.clickBookItem(position);
+                mainPresenter.clickBookItem(position);
             }
+
             @Override
             public void onItemLongClick(View view, int position) {
 

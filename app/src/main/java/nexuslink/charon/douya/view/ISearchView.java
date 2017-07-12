@@ -1,5 +1,6 @@
 package nexuslink.charon.douya.view;
 
+import nexuslink.charon.douya.bean.book.BookData;
 import nexuslink.charon.douya.bean.movie.MovieData;
 
 /**
@@ -15,8 +16,11 @@ public interface ISearchView {
 
     void toMovieInf(String id,String name);
 
+    void toBookInf(String id, String name);
 
     void addMovieView(MovieData data);
+
+    void addBookView(BookData data);
 
     void showError();
 }

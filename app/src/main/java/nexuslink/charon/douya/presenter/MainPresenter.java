@@ -2,13 +2,13 @@ package nexuslink.charon.douya.presenter;
 import android.os.Handler;
 import android.util.Log;
 
-import nexuslink.charon.douya.bean.Movie;
+import java.util.Random;
+
 import nexuslink.charon.douya.bean.book.BookData;
-import nexuslink.charon.douya.bean.book.BookInf;
+import nexuslink.charon.douya.bean.book.BookTag;
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.HttpService;
 import nexuslink.charon.douya.view.IMainView;
-import nexuslink.charon.douya.view.ISearchView;
 import rx.Subscriber;
 
 /**
@@ -65,7 +65,7 @@ public class MainPresenter {
         HttpService.getInstance().getInTheaters(movieSubscriber);
     }
 
-    public void getBookItem() {
+    public void getBookItem(String tag) {
         bookSubscriber = new Subscriber<BookData>() {
             @Override
             public void onCompleted() {
@@ -84,15 +84,25 @@ public class MainPresenter {
                 mainView.initBookView(bookData);
             }
         };
-        HttpService.getInstance().getSearchBookByTag(bookSubscriber,"小说");
+        Log.d(TAG, tag);
+        HttpService.getInstance().getSearchBookByTag(bookSubscriber,tag);
 
     }
+
+
+
 
     public void clickMovieItem(int position) {
         String id = myMovieData.getSubjects().get(position).getId();
         String name = myMovieData.getSubjects().get(position).getTitle();
         Log.d(TAG, "id:"+id);
         mainView.toMovieInf(id,name);
+    }
+
+    public void clickBookItem(int position) {
+        String id = myBookData.getBooks().get(position).getId();
+        String name = myBookData.getBooks().get(position).getTitle();
+        mainView.toBookInf(id, name);
     }
 
 }

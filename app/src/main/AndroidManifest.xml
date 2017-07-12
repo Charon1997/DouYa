@@ -46,6 +46,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activities.MovieInfActivity" />
+        <activity android:name=".ui.activities.BookInfActivity"/>
         <provider
             android:authorities="nexuslink.charon.douya.ui.provider.SearchProvider"
             android:name=".ui.provider.SearchProvider">

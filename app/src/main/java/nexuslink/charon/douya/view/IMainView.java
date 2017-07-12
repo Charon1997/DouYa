@@ -2,7 +2,6 @@ package nexuslink.charon.douya.view;
 
 import android.view.Menu;
 
-import nexuslink.charon.douya.bean.Movie;
 import nexuslink.charon.douya.bean.book.BookData;
 import nexuslink.charon.douya.bean.movie.MovieData;
 
@@ -19,6 +18,8 @@ public interface IMainView {
     void hideLoading();
 
     void toMovieInf(String id,String name);
+
+    void toBookInf(String id,String name);
 
     void exit();
 
