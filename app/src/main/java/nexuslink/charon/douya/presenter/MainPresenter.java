@@ -1,27 +1,26 @@
 package nexuslink.charon.douya.presenter;
+
 import android.os.Handler;
 import android.util.Log;
 
-import java.util.Random;
-
 import nexuslink.charon.douya.bean.book.BookData;
-import nexuslink.charon.douya.bean.book.BookTag;
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.HttpService;
 import nexuslink.charon.douya.view.IMainView;
 import rx.Subscriber;
 
 /**
- * Created by Administrator on 2017/7/7.
+ * Created by Charon on 2017/7/7.
  */
 
 public class MainPresenter {
     private final static String TAG = MainPresenter.class.getSimpleName();
-    private IMainView mainView ;
+    private IMainView mainView;
     private Subscriber<MovieData> movieSubscriber;
     private Subscriber<BookData> bookSubscriber;
     private MovieData myMovieData;
     private BookData myBookData;
+
     public MainPresenter(IMainView mainView) {
         this.mainView = mainView;
     }
@@ -46,7 +45,7 @@ public class MainPresenter {
                     }
                 }, 1000);
 
-                Log.d(TAG, "加载数据失败，Error:"+e.toString());
+                Log.d(TAG, "加载数据失败，Error:" + e.toString());
 
             }
 
@@ -81,22 +80,20 @@ public class MainPresenter {
             public void onNext(BookData bookData) {
                 myBookData = bookData;
                 if (bookData.getBooks().size() != 0)
-                mainView.initBookView(bookData);
+                    mainView.initBookView(bookData);
             }
         };
         Log.d(TAG, tag);
-        HttpService.getInstance().getSearchBookByTag(bookSubscriber,tag);
+        HttpService.getInstance().getSearchBookByTag(bookSubscriber, tag);
 
     }
-
-
 
 
     public void clickMovieItem(int position) {
         String id = myMovieData.getSubjects().get(position).getId();
         String name = myMovieData.getSubjects().get(position).getTitle();
-        Log.d(TAG, "id:"+id);
-        mainView.toMovieInf(id,name);
+        Log.d(TAG, "id:" + id);
+        mainView.toMovieInf(id, name);
     }
 
     public void clickBookItem(int position) {

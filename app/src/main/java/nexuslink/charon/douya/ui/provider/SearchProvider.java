@@ -3,7 +3,7 @@ package nexuslink.charon.douya.ui.provider;
 import android.content.SearchRecentSuggestionsProvider;
 
 /**
- * Created by Administrator on 2017/7/11.
+ * Created by Charon on 2017/7/11.
  */
 
 public class SearchProvider extends SearchRecentSuggestionsProvider {

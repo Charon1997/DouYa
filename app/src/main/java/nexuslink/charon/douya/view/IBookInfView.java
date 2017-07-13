@@ -1,16 +1,22 @@
 package nexuslink.charon.douya.view;
 
 /**
- * Created by Administrator on 2017/4/18.
+ * Created by Charon on 2017/4/18.
  */
 
 public interface IBookInfView {
     //get信息
-    public String getName();
+    String getName();
 
+    void back();
 
+    void loadView(String backImg, String mainImg, String title, String tag, String author, double rating
+            , String publisher, String publisherDate, int ratingCount, String bookSummary, String authorSummary, String catalogSummary);
 
-    public void back();
+    void showLoading();
 
+    void hideLoading();
+
+    void showError();
 
 }

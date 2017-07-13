@@ -4,7 +4,7 @@ import nexuslink.charon.douya.bean.book.BookData;
 import nexuslink.charon.douya.bean.movie.MovieData;
 
 /**
- * Created by Administrator on 2017/4/18.
+ * Created by Charon on 2017/4/18.
  */
 
 public interface ISearchView {
@@ -14,7 +14,7 @@ public interface ISearchView {
 
     void hideLoading();
 
-    void toMovieInf(String id,String name);
+    void toMovieInf(String id, String name);
 
     void toBookInf(String id, String name);
 

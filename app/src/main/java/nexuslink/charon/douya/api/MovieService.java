@@ -2,14 +2,13 @@ package nexuslink.charon.douya.api;
 
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.bean.movie.MovieInf;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
+
 /**
- * Created by Administrator on 2017/7/7.
+ * Created by Charon on 2017/7/7.
  */
 
 public interface MovieService {

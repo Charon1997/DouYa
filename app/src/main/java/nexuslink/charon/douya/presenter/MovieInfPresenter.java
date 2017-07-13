@@ -10,7 +10,7 @@ import nexuslink.charon.douya.view.IMovieInfView;
 import rx.Subscriber;
 
 /**
- * Created by Administrator on 2017/7/8.
+ * Created by Charon on 2017/7/8.
  */
 
 public class MovieInfPresenter {
@@ -45,12 +45,12 @@ public class MovieInfPresenter {
             public void onNext(MovieInf data) {
                 String backImg = data.getImages().getSmall();
                 String mainImg = data.getImages().getLarge();
-                String cast = connectCast(data.getCasts(),data.getCasts().size());
+                String cast = connectCast(data.getCasts(), data.getCasts().size());
                 String director = connectDirector(data.getDirectors(), data.getDirectors().size());
                 String title = data.getTitle();
                 String originalTitle = data.getOriginal_title();
                 String year = data.getYear();
-                String country = connectString(data.getCountries(),data.getCountries().size());
+                String country = connectString(data.getCountries(), data.getCountries().size());
                 String genres = connectString(data.getGenres(), data.getGenres().size());
                 int ratingCount = data.getRatings_count();
                 String summary = data.getSummary();
@@ -65,7 +65,7 @@ public class MovieInfPresenter {
                 if (data.getRating().getAverage() != 0) {
                     rating = data.getRating().getAverage();
                 }
-                movieInfView.loadView(backImg, mainImg, cast, director, rating, title, originalTitle, year,country,genres,ratingCount,summary);
+                movieInfView.loadView(backImg, mainImg, cast, director, rating, title, originalTitle, year, country, genres, ratingCount, summary);
                 movieInfView.initView(data);
             }
         };
@@ -79,11 +79,12 @@ public class MovieInfPresenter {
         String information = "";
         for (int i = 0; i < size; i++) {
             if (i != size - 1) {
-                information = information + data.get(i) +"/";
+                information = information + data.get(i) + "/";
             } else information += data.get(i);
         }
         return information;
     }
+
     private String connectCast(List<MovieInf.CastsBean> data, int size) {
         if (size > 3) {
             size = 3;
@@ -91,7 +92,7 @@ public class MovieInfPresenter {
         String information = "";
         for (int i = 0; i < size; i++) {
             if (i != size - 1) {
-                information = information + data.get(i) +"/";
+                information = information + data.get(i) + "/";
             } else information += data.get(i);
         }
         return information;
@@ -104,7 +105,7 @@ public class MovieInfPresenter {
         String information = "";
         for (int i = 0; i < size; i++) {
             if (i != size - 1) {
-                information = information + data.get(i) +"/";
+                information = information + data.get(i) + "/";
             } else information += data.get(i);
         }
         return information;

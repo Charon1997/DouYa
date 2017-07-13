@@ -3,7 +3,7 @@ package nexuslink.charon.douya.bean.movie;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/7/7.
+ * Created by Charon on 2017/7/7.
  */
 
 public class MovieData {

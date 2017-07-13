@@ -15,7 +15,7 @@ import nexuslink.charon.douya.bean.movie.MovieInf;
 import nexuslink.charon.douya.biz.OnRecItemClickListener;
 
 /**
- * Created by Administrator on 2017/7/10.
+ * Created by Charon on 2017/7/10.
  */
 
 public class MovieInfRecAdapter extends RecyclerView.Adapter {

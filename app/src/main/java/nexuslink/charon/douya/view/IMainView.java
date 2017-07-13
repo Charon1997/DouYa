@@ -6,7 +6,7 @@ import nexuslink.charon.douya.bean.book.BookData;
 import nexuslink.charon.douya.bean.movie.MovieData;
 
 /**
- * Created by Administrator on 2017/4/18.
+ * Created by Charon on 2017/4/18.
  */
 
 public interface IMainView {
@@ -17,9 +17,9 @@ public interface IMainView {
 
     void hideLoading();
 
-    void toMovieInf(String id,String name);
+    void toMovieInf(String id, String name);
 
-    void toBookInf(String id,String name);
+    void toBookInf(String id, String name);
 
     void exit();
 
@@ -28,5 +28,6 @@ public interface IMainView {
     void initMovieView(MovieData data);
 
     void initBookView(BookData data);
+
     void showError();
 }

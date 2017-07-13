@@ -11,7 +11,7 @@ import nexuslink.charon.douya.R;
 import nexuslink.charon.douya.ui.base.BaseActivity;
 
 /**
- * Created by Administrator on 2017/4/18.
+ * Created by Charon on 2017/4/18.
  */
 
 public class WelcomeActivity extends BaseActivity {

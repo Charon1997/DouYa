@@ -1,11 +1,10 @@
 package nexuslink.charon.douya.bean.book;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/7/12.
+ * Created by Charon on 2017/7/12.
  */
 
 public class BookTag {

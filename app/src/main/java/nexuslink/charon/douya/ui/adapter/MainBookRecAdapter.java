@@ -13,23 +13,21 @@ import com.squareup.picasso.Picasso;
 
 import nexuslink.charon.douya.R;
 import nexuslink.charon.douya.bean.book.BookData;
-import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.OnRecItemClickListener;
 
 /**
- * Created by Administrator on 2017/7/11.
+ * Created by Charon on 2017/7/11.
  */
 
-public class MainBookRecAdapter extends RecyclerView.Adapter{
+public class MainBookRecAdapter extends RecyclerView.Adapter {
     private BookData list; //数据
     private OnRecItemClickListener onRecItemClickListener = null;
     private Context context;
 
-    public MainBookRecAdapter(BookData list,Context context) {
+    public MainBookRecAdapter(BookData list, Context context) {
         this.list = list;
         this.context = context;
     }
-
 
 
     public void setOnItemClickListener(OnRecItemClickListener onItemClickListener) {
@@ -45,28 +43,29 @@ public class MainBookRecAdapter extends RecyclerView.Adapter{
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         //用picasso ,如果没得图，用默认的。
-        Picasso.with(context).load(list.getBooks().get(position).getImages().getLarge()+"").into(((MyViewHolder) holder).iv_img);
+        Picasso.with(context).load(list.getBooks().get(position).getImages().getLarge() + "").into(((MyViewHolder) holder).iv_img);
         //书籍名称
         Log.d("BookRec", list.getBooks().get(position).getTitle());
-        ((MyViewHolder)holder).tv_name.setText(list.getBooks().get(position).getTitle()+"");
+        ((MyViewHolder) holder).tv_name.setText(list.getBooks().get(position).getTitle() + "");
         //作者
-        if (list.getBooks().get(position).getAuthor().size()>0){
-            ((MyViewHolder) holder).tv_author.setText("作者："+list.getBooks().get(position).getAuthor().get(0)+"");
+        if (list.getBooks().get(position).getAuthor().size() > 0) {
+            ((MyViewHolder) holder).tv_author.setText("作者：" + list.getBooks().get(position).getAuthor().get(0) + "");
         }
 
         //评分，还可以加星星
-        ((MyViewHolder)holder).tv_rating.setText("评分:"+list.getBooks().get(position).getRating().getAverage()+"");
+        if (list.getBooks().get(position).getRating().getAverage() > 0)
+            ((MyViewHolder) holder).tv_rating.setText("评分:" + list.getBooks().get(position).getRating().getAverage() + "");
 
         ((MyViewHolder) holder).itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onRecItemClickListener.onItemClick(v,position);
+                onRecItemClickListener.onItemClick(v, position);
             }
         });
         ((MyViewHolder) holder).itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                onRecItemClickListener.onItemLongClick(v,position);
+                onRecItemClickListener.onItemLongClick(v, position);
                 return true;
             }
         });
@@ -77,11 +76,12 @@ public class MainBookRecAdapter extends RecyclerView.Adapter{
         return list.getBooks().size();
     }
 
-    private class MyViewHolder extends RecyclerView.ViewHolder{
+    private class MyViewHolder extends RecyclerView.ViewHolder {
         private ImageView iv_img;
         private TextView tv_name;
         private TextView tv_rating;
         private TextView tv_author;
+
         MyViewHolder(View itemView) {
             super(itemView);
             iv_img = (ImageView) itemView.findViewById(R.id.item_book_img);

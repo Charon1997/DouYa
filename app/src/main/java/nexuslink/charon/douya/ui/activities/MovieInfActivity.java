@@ -1,6 +1,5 @@
 package nexuslink.charon.douya.ui.activities;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -17,11 +16,9 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
 
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 import nexuslink.charon.douya.R;
-import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.bean.movie.MovieInf;
 import nexuslink.charon.douya.biz.OnRecItemClickListener;
 import nexuslink.charon.douya.presenter.MovieInfPresenter;
@@ -30,17 +27,17 @@ import nexuslink.charon.douya.ui.base.BaseActivity;
 import nexuslink.charon.douya.view.IMovieInfView;
 
 /**
- * Created by Administrator on 2017/4/20.
+ * Created by Charon on 2017/4/20.
  */
 
 public class MovieInfActivity extends BaseActivity implements IMovieInfView {
     private Toolbar mToolbar;
     private CollapsingToolbarLayout toolbarLayout;
-    private String movieId="",movieName="";
-    private ImageView mIvBackground,mIvMain;
+    private String movieId = "", movieName = "";
+    private ImageView mIvBackground, mIvMain;
     private MovieInfPresenter movieInfPresenter = new MovieInfPresenter(this);
     private ProgressBar mProgressBar;
-    private TextView mTvError,mTvTitle,mTvGenres,mTvCountry,mTvOriginalTitle,mTvPubYear,mTvRatingCount,mTvRating,mTvSeeMoreSummary,mTvSummary;
+    private TextView mTvError, mTvTitle, mTvGenres, mTvCountry, mTvOriginalTitle, mTvPubYear, mTvRatingCount, mTvRating, mTvSeeMoreSummary, mTvSummary;
     private MaterialRatingBar mMrbRating;
     private RelativeLayout mRelativeLayout;
     private RecyclerView mRvCast;
@@ -100,13 +97,13 @@ public class MovieInfActivity extends BaseActivity implements IMovieInfView {
         mRvCast.setLayoutManager(new StaggeredGridLayoutManager(1,
                 StaggeredGridLayoutManager.HORIZONTAL));
         mRvCast.setItemAnimator(new DefaultItemAnimator());
-        MovieInfRecAdapter mRecAdapter = new MovieInfRecAdapter(this,data);
+        MovieInfRecAdapter mRecAdapter = new MovieInfRecAdapter(this, data);
         mRvCast.setAdapter(mRecAdapter);
         mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 //mainPresenter.clickItem(position);
-                Toast.makeText(MovieInfActivity.this, "点击了"+position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MovieInfActivity.this, "点击了" + position, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -128,9 +125,9 @@ public class MovieInfActivity extends BaseActivity implements IMovieInfView {
         mTvGenres.setText(genres);
         mTvCountry.setText(country);
         mTvPubYear.setText(year);
-        mTvRating.setText(rating+"");
+        mTvRating.setText(rating + "");
         mTvRatingCount.setText(ratingCount + "人");
-        mMrbRating.setRating((float) (rating/2));
+        mMrbRating.setRating((float) (rating / 2));
 
         mTvSummary.setText(summary);
         mTvSeeMoreSummary.setOnClickListener(new View.OnClickListener() {
@@ -199,7 +196,6 @@ public class MovieInfActivity extends BaseActivity implements IMovieInfView {
     public String getName() {
         return movieName;
     }
-
 
 
 }

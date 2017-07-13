@@ -1,11 +1,11 @@
 package nexuslink.charon.douya.view;
 
-import java.util.List;
+
 
 import nexuslink.charon.douya.bean.movie.MovieInf;
 
 /**
- * Created by Administrator on 2017/4/18.
+ * Created by Charon on 2017/4/18.
  */
 
 public interface IMovieInfView {

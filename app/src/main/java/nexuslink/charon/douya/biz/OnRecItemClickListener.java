@@ -3,7 +3,7 @@ package nexuslink.charon.douya.biz;
 import android.view.View;
 
 /**
- * Created by Administrator on 2017/4/19.
+ * Created by Charon on 2017/4/19.
  */
 
 public interface OnRecItemClickListener {

@@ -26,7 +26,7 @@ import nexuslink.charon.douya.ui.provider.SearchProvider;
 import nexuslink.charon.douya.view.ISearchView;
 
 /**
- * Created by Administrator on 2017/4/19.
+ * Created by Charon on 2017/4/19.
  */
 
 public class SearchResultActivity extends BaseActivity implements ISearchView {
@@ -159,6 +159,7 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
             public void onItemClick(View view, int position) {
                 searchPresenter.clickMovieItem(position);
             }
+
             @Override
             public void onItemLongClick(View view, int position) {
 
@@ -171,13 +172,14 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        MainBookRecAdapter mRecAdapter = new MainBookRecAdapter(data,this);
+        MainBookRecAdapter mRecAdapter = new MainBookRecAdapter(data, this);
         mRecyclerView.setAdapter(mRecAdapter);
         mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 searchPresenter.clickBookItem(position);
             }
+
             @Override
             public void onItemLongClick(View view, int position) {
 

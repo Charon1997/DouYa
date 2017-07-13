@@ -3,7 +3,7 @@ package nexuslink.charon.douya.bean.book;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/7/11.
+ * Created by Charon on 2017/7/11.
  */
 
 public class BookInf {
@@ -262,7 +262,7 @@ public class BookInf {
 
         private int max;
         private int numRaters;
-        private String average;
+        private double average;
         private int min;
 
         public int getMax() {
@@ -281,11 +281,11 @@ public class BookInf {
             this.numRaters = numRaters;
         }
 
-        public String getAverage() {
+        public double getAverage() {
             return average;
         }
 
-        public void setAverage(String average) {
+        public void setAverage(double average) {
             this.average = average;
         }
 
