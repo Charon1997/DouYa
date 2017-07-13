@@ -14,6 +14,7 @@ import rx.Subscriber;
  */
 
 public class MainPresenter {
+    public static int completed = 0;
     private final static String TAG = MainPresenter.class.getSimpleName();
     private IMainView mainView;
     private Subscriber<MovieData> movieSubscriber;
@@ -30,8 +31,13 @@ public class MainPresenter {
         movieSubscriber = new Subscriber<MovieData>() {
             @Override
             public void onCompleted() {
+                completed++;
                 Log.d(TAG, "加载数据完成");
-                mainView.hideLoading();
+                if (completed == 2){
+                    mainView.hideLoading();
+                    completed = 0;
+                }
+
             }
 
             @Override
@@ -65,15 +71,29 @@ public class MainPresenter {
     }
 
     public void getBookItem(String tag) {
+        mainView.showLoading();
         bookSubscriber = new Subscriber<BookData>() {
             @Override
             public void onCompleted() {
-
+                completed++;
+                Log.d(TAG, "加载数据完成");
+                if (completed == 2){
+                    mainView.hideLoading();
+                    completed = 0;
+                }
             }
 
             @Override
             public void onError(Throwable e) {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainView.showError();
+                    }
+                }, 1000);
 
+                Log.d(TAG, "加载数据失败，Error:" + e.toString());
             }
 
             @Override

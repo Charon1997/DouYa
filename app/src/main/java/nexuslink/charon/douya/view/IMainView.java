@@ -30,4 +30,6 @@ public interface IMainView {
     void initBookView(BookData data);
 
     void showError();
+
+    void shakeHand();
 }

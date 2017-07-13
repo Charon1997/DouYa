@@ -3,6 +3,8 @@ package nexuslink.charon.douya.ui.activities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Vibrator;
 import android.support.v4.view.ViewPager;
 import android.support.design.widget.TabLayout;
 import android.os.Bundle;
@@ -23,12 +25,15 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import nexuslink.charon.douya.R;
 import nexuslink.charon.douya.bean.book.BookData;
 import nexuslink.charon.douya.bean.book.BookTag;
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.OnRecItemClickListener;
+import nexuslink.charon.douya.biz.OnShakeListener;
+import nexuslink.charon.douya.biz.ShakeListener;
 import nexuslink.charon.douya.presenter.MainPresenter;
 import nexuslink.charon.douya.ui.adapter.MainBookRecAdapter;
 import nexuslink.charon.douya.ui.adapter.MainMovieRecAdapter;
@@ -42,7 +47,7 @@ import static nexuslink.charon.douya.ui.activities.SearchResultActivity.MOVIE_ID
 import static nexuslink.charon.douya.ui.activities.SearchResultActivity.MOVIE_NAME;
 
 public class MainActivity extends BaseActivity implements IMainView {
-
+    Vibrator mVibrator;
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private Toolbar mToolbar;
@@ -54,6 +59,7 @@ public class MainActivity extends BaseActivity implements IMainView {
     private TextView mTextView;
     private MainPresenter mainPresenter = new MainPresenter(this);
     private long mExitTime;
+    private ShakeListener mShakeListener ;
 
 
     @Override
@@ -78,7 +84,9 @@ public class MainActivity extends BaseActivity implements IMainView {
     }
 
     public String chooseTag() {
-        return BookTag.BOOK_TAG[(int) (Math.random() * BookTag.BOOK_TAG.length)];
+        Random random = new Random();
+
+        return BookTag.BOOK_TAG[random.nextInt(BookTag.BOOK_TAG.length)];
     }
 
     @Override
@@ -152,7 +160,6 @@ public class MainActivity extends BaseActivity implements IMainView {
         mViewPager.setVisibility(View.VISIBLE);
     }
 
-
     @Override
     public void showError() {
         mProgressBar.setVisibility(View.GONE);
@@ -165,9 +172,35 @@ public class MainActivity extends BaseActivity implements IMainView {
             @Override
             public void onClick(View v) {
                 mainPresenter.getMovieInTheaters();
+                mainPresenter.getBookItem(chooseTag());
             }
         });
         mViewPager.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void shakeHand() {
+        mShakeListener = new ShakeListener(this);
+        mShakeListener.setOnShakeListener(new OnShakeListener() {
+            @Override
+            public void onShake() {
+                mShakeListener.stop();
+                startVibrate();
+                mainPresenter.getBookItem(chooseTag());
+                MainPresenter.completed = 1;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mShakeListener.start();
+                    }
+                },1000);
+            }
+        });
+    }
+
+    private void startVibrate() {
+        mVibrator = (Vibrator) getApplication().getSystemService(VIBRATOR_SERVICE);//震动
+        mVibrator.vibrate(new long[]{300, 200, 300, 200}, -1);
     }
 
     @Override
@@ -193,7 +226,6 @@ public class MainActivity extends BaseActivity implements IMainView {
 
         startActivity(intent);
     }
-
 
     @Override
     public void exit() {
@@ -274,4 +306,15 @@ public class MainActivity extends BaseActivity implements IMainView {
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        shakeHand();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mShakeListener.stop();
+    }
 }
