@@ -19,6 +19,9 @@ import nexuslink.charon.douya.presenter.BookInfPresenter;
 import nexuslink.charon.douya.ui.base.BaseActivity;
 import nexuslink.charon.douya.view.IBookInfView;
 
+import static nexuslink.charon.douya.bean.Constant.BOOK_ID;
+import static nexuslink.charon.douya.bean.Constant.BOOK_NAME;
+
 /**
  * Created by Charon on 2017/7/12.
  */
@@ -46,8 +49,8 @@ public class BookInfActivity extends BaseActivity implements IBookInfView {
     }
 
     private void initData() {
-        bookId = getIntent().getStringExtra(SearchResultActivity.BOOK_ID);
-        bookName = getIntent().getStringExtra(SearchResultActivity.BOOK_NAME);
+        bookId = getIntent().getStringExtra(BOOK_ID);
+        bookName = getIntent().getStringExtra(BOOK_NAME);
     }
 
     private void initBaseView() {

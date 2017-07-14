@@ -19,9 +19,9 @@ public interface BookService {
     Observable<BookInf> getSearchByIsbn(@Path("isbn") String isbn);
 
     @GET("v2/book/search")
-    Observable<BookData> getSearchByQ(@Query("q") String text);
+    Observable<BookData> getSearchByQ(@Query("q") String text,@Query("start") int start,@Query("count") int count);
 
     @GET("v2/book/search")
-    Observable<BookData> getSearchByTag(@Query("tag") String tag);
+    Observable<BookData> getSearchByTag(@Query("tag") String tag,@Query("start") int start,@Query("count") int count);
 }
 

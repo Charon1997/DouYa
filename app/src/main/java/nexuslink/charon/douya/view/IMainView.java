@@ -32,4 +32,8 @@ public interface IMainView {
     void showError();
 
     void shakeHand();
+
+    void scrollFootToast();
+
+    void initMoreMovieView();
 }

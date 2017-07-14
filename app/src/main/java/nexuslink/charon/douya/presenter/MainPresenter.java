@@ -1,11 +1,14 @@
 package nexuslink.charon.douya.presenter;
 
+import android.graphics.Movie;
 import android.os.Handler;
 import android.util.Log;
 
 import nexuslink.charon.douya.bean.book.BookData;
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.HttpService;
+import nexuslink.charon.douya.ui.activities.MainActivity;
+import nexuslink.charon.douya.ui.adapter.MainMovieRecAdapter;
 import nexuslink.charon.douya.view.IMainView;
 import rx.Subscriber;
 
@@ -59,7 +62,7 @@ public class MainPresenter {
             public void onNext(MovieData movieData) {
                 myMovieData = movieData;
                 if (movieData.getCount() != 0) {
-                    Log.d(TAG, "加载数据");
+                    Log.d(TAG, "加载数据"+movieData.getSubjects().size());
                     mainView.initMovieView(movieData);
                 } else {
                     Log.d(TAG, "加载数据为0");
@@ -67,7 +70,34 @@ public class MainPresenter {
             }
         };
 
-        HttpService.getInstance().getInTheaters(movieSubscriber);
+        HttpService.getInstance().getInTheaters(movieSubscriber,0);
+    }
+
+    public void getMoreMovie(int count) {
+        movieSubscriber = new Subscriber<MovieData>() {
+            @Override
+            public void onCompleted() {
+                Log.d(TAG, "加载数据完成");
+                MainActivity.loading = false;
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG, "加载数据失败"+e.toString());
+                mainView.scrollFootToast();
+                MainActivity.movieMoreCount--;
+            }
+
+            @Override
+            public void onNext(final MovieData data) {
+                mainView.initMovieView(data);
+            }
+        };
+        HttpService.getInstance().getInTheaters(movieSubscriber,count*20);
+    }
+
+    public void getMoreBook(String tag) {
+
     }
 
     public void getBookItem(String tag) {
@@ -104,7 +134,7 @@ public class MainPresenter {
             }
         };
         Log.d(TAG, tag);
-        HttpService.getInstance().getSearchBookByTag(bookSubscriber, tag);
+        HttpService.getInstance().getSearchBookByTag(bookSubscriber, tag,0,20);
 
     }
 
@@ -120,6 +150,15 @@ public class MainPresenter {
         String id = myBookData.getBooks().get(position).getId();
         String name = myBookData.getBooks().get(position).getTitle();
         mainView.toBookInf(id, name);
+    }
+
+
+
+    public boolean ifMoreMovie(int position) {
+        if (myMovieData.getTotal() - myMovieData.getSubjects().size() <= 0) {
+            //总数-当前数量等于0
+            return false;
+        } else return true;
     }
 
 }

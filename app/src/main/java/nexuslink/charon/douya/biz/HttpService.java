@@ -54,16 +54,16 @@ public class HttpService {
         return SingletonHolder.INSTANCE;
     }
 
-    public void getInTheaters(Subscriber<MovieData> subscriber) {
-        movieService.getInTheaters()
+    public void getInTheaters(Subscriber<MovieData> subscriber,int start) {
+        movieService.getInTheaters(start)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
     }
 
-    public void getSearchMovie(Subscriber<MovieData> subscriber,String searchString) {
-        movieService.getSearchMovie(searchString)
+    public void getSearchMovie(Subscriber<MovieData> subscriber,String searchString,int start,int count) {
+        movieService.getSearchMovie(searchString,start,count)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -94,16 +94,16 @@ public class HttpService {
                 .subscribe(subscriber);
     }
 
-    public void getSearchBook(Subscriber<BookData> subscriber, String text) {
-        bookService.getSearchByQ(text)
+    public void getSearchBook(Subscriber<BookData> subscriber, String text,int start,int count) {
+        bookService.getSearchByQ(text,start,count)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
     }
 
-    public void getSearchBookByTag(Subscriber<BookData> subscriber, String tag) {
-        bookService.getSearchByTag(tag)
+    public void getSearchBookByTag(Subscriber<BookData> subscriber, String tag,int start,int count) {
+        bookService.getSearchByTag(tag,start,count)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

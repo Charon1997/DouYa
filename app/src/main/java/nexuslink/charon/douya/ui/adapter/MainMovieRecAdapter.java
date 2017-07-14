@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -20,6 +21,10 @@ import nexuslink.charon.douya.biz.OnRecItemClickListener;
  */
 
 public class MainMovieRecAdapter extends RecyclerView.Adapter {
+    private boolean noMore = false;
+    private static final int TYPE_ITEM = 0;
+    private static final int TYPE_FOOTER = 1;
+    private static final int TYPE_END = 2;
     private MovieData list; //数据
     private OnRecItemClickListener onRecItemClickListener = null;
     private Context context;
@@ -36,51 +41,74 @@ public class MainMovieRecAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_main, parent, false);
-        return new MyViewHolder(view);
+        if (viewType == TYPE_FOOTER) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_item_main, parent, false);
+            return new FootViewHolder(view);
+        } else if (viewType == TYPE_ITEM) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_main, parent, false);
+            return new MyViewHolder(view);
+        } else if (viewType == TYPE_END) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.end_item_main, parent, false);
+            return new EndViewHolder(view);
+        }
+        return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        //电影名称
-        ((MyViewHolder) holder).tv_name.setText(list.getSubjects().get(position).getTitle() + "");
-        //用picasso ,如果没得图，用默认的。
-        Picasso.with(context).load(list.getSubjects().get(position).getImages().getMedium() + "").into(((MyViewHolder) holder).iv_head);
-        //主角
-        if (list.getSubjects().get(position).getCasts().size() > 0) {
-            ((MyViewHolder) holder).tv_cast.setText("主演：" + list.getSubjects().get(position).getCasts().get(0).getName() + "");
-            Log.d("123", list.getSubjects().get(position).getCasts().size() + "sizecasts");
-        }
-
-        //导演,就怕没得导演
-        if (list.getSubjects().get(position).getDirectors().size() > 0) {
-            Log.d("123", list.getSubjects().get(position).getDirectors().size() + "size");
-            ((MyViewHolder) holder).tv_director.setText("导演：" + list.getSubjects().get(position).getDirectors().get(0).getName() + "");
-        }
-        //评分，还可以加星星
-        if (list.getSubjects().get(position).getRating().getAverage() > 0.0) {
-            ((MyViewHolder) holder).tv_rating.setText("评分：" + list.getSubjects().get(position).getRating().getAverage() + "");
-        }
-
-
-        ((MyViewHolder) holder).itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onRecItemClickListener.onItemClick(v, position);
+        if (holder instanceof MyViewHolder) {
+            //电影名称
+            ((MyViewHolder) holder).tv_name.setText(list.getSubjects().get(position).getTitle() + "");
+            //用picasso ,如果没得图，用默认的。
+            Picasso.with(context).load(list.getSubjects().get(position).getImages().getMedium() + "").into(((MyViewHolder) holder).iv_head);
+            //主角
+            if (list.getSubjects().get(position).getCasts().size() > 0) {
+                ((MyViewHolder) holder).tv_cast.setText("主演：" + list.getSubjects().get(position).getCasts().get(0).getName() + "");
+                Log.d("123", list.getSubjects().get(position).getCasts().size() + "sizecasts");
             }
-        });
-        ((MyViewHolder) holder).itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                onRecItemClickListener.onItemLongClick(v, position);
-                return true;
+
+            //导演,就怕没得导演
+            if (list.getSubjects().get(position).getDirectors().size() > 0) {
+                Log.d("123", list.getSubjects().get(position).getDirectors().size() + "size");
+                ((MyViewHolder) holder).tv_director.setText("导演：" + list.getSubjects().get(position).getDirectors().get(0).getName() + "");
             }
-        });
+            //评分，还可以加星星
+            if (list.getSubjects().get(position).getRating().getAverage() > 0.0) {
+                ((MyViewHolder) holder).tv_rating.setText("评分：" + list.getSubjects().get(position).getRating().getAverage() + "");
+            }
+
+
+            ((MyViewHolder) holder).itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onRecItemClickListener.onItemClick(v, position);
+                }
+            });
+            ((MyViewHolder) holder).itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    onRecItemClickListener.onItemLongClick(v, position);
+                    return true;
+                }
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
-        return list.getSubjects().size();
+        return list.getSubjects().size() == 0 ? 0 : list.getSubjects().size() + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position + 1 == getItemCount()) {
+            if (noMore){
+                return TYPE_END;
+            }else
+            return TYPE_FOOTER;
+        } else {
+            return TYPE_ITEM;
+        }
     }
 
     private class MyViewHolder extends RecyclerView.ViewHolder {
@@ -98,5 +126,34 @@ public class MainMovieRecAdapter extends RecyclerView.Adapter {
             tv_cast = (TextView) itemView.findViewById(R.id.item_movie_cast);
             tv_director = (TextView) itemView.findViewById(R.id.item_movie_director);
         }
+    }
+
+    private class FootViewHolder extends RecyclerView.ViewHolder {
+        private ProgressBar pb_footer;
+
+        public FootViewHolder(View itemView) {
+            super(itemView);
+            pb_footer = (ProgressBar) itemView.findViewById(R.id.footer_item_progressBar);
+        }
+    }
+    private class EndViewHolder extends RecyclerView.ViewHolder {
+        private TextView  tv_end;
+
+        public EndViewHolder(View itemView) {
+            super(itemView);
+            tv_end = (TextView) itemView.findViewById(R.id.end_text);
+        }
+    }
+
+    public void addData(MovieData movieData){
+        for (int i = 0; i < movieData.getSubjects().size();i++) {
+            list.getSubjects().add(movieData.getSubjects().get(i));
+        }
+        list.setCount(movieData.getCount());
+        list.setTotal(movieData.getTotal());
+        if (list.getTotal() == getItemCount()-1) {
+            noMore = true;
+        }
+        notifyDataSetChanged();
     }
 }

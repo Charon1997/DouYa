@@ -25,6 +25,11 @@ import nexuslink.charon.douya.ui.base.BaseActivity;
 import nexuslink.charon.douya.ui.provider.SearchProvider;
 import nexuslink.charon.douya.view.ISearchView;
 
+import static nexuslink.charon.douya.bean.Constant.BOOK_ID;
+import static nexuslink.charon.douya.bean.Constant.BOOK_NAME;
+import static nexuslink.charon.douya.bean.Constant.MOVIE_ID;
+import static nexuslink.charon.douya.bean.Constant.MOVIE_NAME;
+
 /**
  * Created by Charon on 2017/4/19.
  */
@@ -38,10 +43,7 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
     private int current;
     private SearchPresenter searchPresenter = new SearchPresenter(this);
     private String searchString;
-    public final static String MOVIE_ID = "movieId";
-    public final static String MOVIE_NAME = "movieName";
-    public final static String BOOK_ID = "bookId";
-    public final static String BOOK_NAME = "bookName";
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

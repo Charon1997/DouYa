@@ -41,12 +41,15 @@ import nexuslink.charon.douya.ui.adapter.MainPagerAdapter;
 import nexuslink.charon.douya.ui.base.BaseActivity;
 import nexuslink.charon.douya.view.IMainView;
 
-import static nexuslink.charon.douya.ui.activities.SearchResultActivity.BOOK_ID;
-import static nexuslink.charon.douya.ui.activities.SearchResultActivity.BOOK_NAME;
-import static nexuslink.charon.douya.ui.activities.SearchResultActivity.MOVIE_ID;
-import static nexuslink.charon.douya.ui.activities.SearchResultActivity.MOVIE_NAME;
+import static nexuslink.charon.douya.bean.Constant.BOOK_ID;
+import static nexuslink.charon.douya.bean.Constant.BOOK_NAME;
+import static nexuslink.charon.douya.bean.Constant.MOVIE_ID;
+import static nexuslink.charon.douya.bean.Constant.MOVIE_NAME;
+import static nexuslink.charon.douya.bean.Constant.VISIBLE_THRESHOLD;
 
 public class MainActivity extends BaseActivity implements IMainView {
+    private static int bookMoreCount = 0;
+    public static int movieMoreCount = 0;
     Vibrator mVibrator;
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
@@ -59,8 +62,9 @@ public class MainActivity extends BaseActivity implements IMainView {
     private TextView mTextView;
     private MainPresenter mainPresenter = new MainPresenter(this);
     private long mExitTime;
-    private ShakeListener mShakeListener ;
-
+    private ShakeListener mShakeListener;
+    public static boolean loading = false;
+    private MainMovieRecAdapter mRecAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,9 +197,19 @@ public class MainActivity extends BaseActivity implements IMainView {
                     public void run() {
                         mShakeListener.start();
                     }
-                },1000);
+                }, 1000);
             }
         });
+    }
+
+    @Override
+    public void scrollFootToast() {
+        Toast.makeText(this, "主人，网络不太好哟", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void initMoreMovieView() {
+
     }
 
     private void startVibrate() {
@@ -258,11 +272,17 @@ public class MainActivity extends BaseActivity implements IMainView {
 
     @Override
     public void initMovieView(MovieData data) {
-        RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
-        mRecyclerView1.setLayoutManager(manager);
-        mRecyclerView1.setItemAnimator(new DefaultItemAnimator());
-        MainMovieRecAdapter mRecAdapter = new MainMovieRecAdapter(data, this);
-        mRecyclerView1.setAdapter(mRecAdapter);
+        if (movieMoreCount == 0) {
+            final RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
+            mRecyclerView1.setLayoutManager(manager);
+            mRecyclerView1.setItemAnimator(new DefaultItemAnimator());
+            mRecAdapter = new MainMovieRecAdapter(data, this);
+            mRecyclerView1.setAdapter(mRecAdapter);
+        }
+        else
+            mRecAdapter.addData(data);
+
+
         mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -272,6 +292,25 @@ public class MainActivity extends BaseActivity implements IMainView {
             @Override
             public void onItemLongClick(View view, int position) {
 
+            }
+        });
+        mRecyclerView1.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                int totalItemCount = layoutManager.getItemCount();
+
+                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                Log.d("123", "开始前loading" + loading + "movieMore" + movieMoreCount + "last" + totalItemCount);
+                if (!loading && totalItemCount < (lastVisibleItem + VISIBLE_THRESHOLD) && dy > 0 && mainPresenter.ifMoreMovie(totalItemCount)) {
+                    //未在加载、且还有3个就要到底了
+                    movieMoreCount++;
+                    Log.d("123", "开始后loading" + loading + "movieMore" + movieMoreCount);
+                    mainPresenter.getMoreMovie(movieMoreCount);
+                    loading = true;
+                }
             }
         });
     }

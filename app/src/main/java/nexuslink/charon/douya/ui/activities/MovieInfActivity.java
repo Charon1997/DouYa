@@ -26,6 +26,9 @@ import nexuslink.charon.douya.ui.adapter.MovieInfRecAdapter;
 import nexuslink.charon.douya.ui.base.BaseActivity;
 import nexuslink.charon.douya.view.IMovieInfView;
 
+import static nexuslink.charon.douya.bean.Constant.MOVIE_ID;
+import static nexuslink.charon.douya.bean.Constant.MOVIE_NAME;
+
 /**
  * Created by Charon on 2017/4/20.
  */
@@ -52,8 +55,8 @@ public class MovieInfActivity extends BaseActivity implements IMovieInfView {
     }
 
     private void initData() {
-        movieId = getIntent().getStringExtra(SearchResultActivity.MOVIE_ID);
-        movieName = getIntent().getStringExtra(SearchResultActivity.MOVIE_NAME);
+        movieId = getIntent().getStringExtra(MOVIE_ID);
+        movieName = getIntent().getStringExtra(MOVIE_NAME);
     }
 
     private void initBaseView() {

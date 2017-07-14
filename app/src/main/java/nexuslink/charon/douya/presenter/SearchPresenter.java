@@ -58,7 +58,7 @@ public class SearchPresenter {
                 }
             }
         };
-        HttpService.getInstance().getSearchMovie(movieSubscriber,searchString);
+        HttpService.getInstance().getSearchMovie(movieSubscriber,searchString,0,20);
     }
 
     public void getSearchBook(String searchString) {
@@ -95,10 +95,10 @@ public class SearchPresenter {
         };
         if (BookTag.getBookTagList().contains(searchString)){
             //在Tag中
-            HttpService.getInstance().getSearchBookByTag(bookSubscriber,searchString);
+            HttpService.getInstance().getSearchBookByTag(bookSubscriber,searchString,0,20);
         }else {
             //没在Tag中
-            HttpService.getInstance().getSearchBook(bookSubscriber, searchString);
+            HttpService.getInstance().getSearchBook(bookSubscriber, searchString,0,20);
         }
     }
 
