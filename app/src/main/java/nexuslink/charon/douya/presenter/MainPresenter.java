@@ -78,7 +78,7 @@ public class MainPresenter {
             @Override
             public void onCompleted() {
                 Log.d(TAG, "加载数据完成");
-                MainActivity.loading = false;
+                MainActivity.movieLoading = false;
             }
 
             @Override
@@ -96,7 +96,30 @@ public class MainPresenter {
         HttpService.getInstance().getInTheaters(movieSubscriber,count*20);
     }
 
-    public void getMoreBook(String tag) {
+    public void getMoreBook(String tag,int count) {
+        bookSubscriber = new Subscriber<BookData>() {
+            @Override
+            public void onCompleted() {
+                MainActivity.bookLoading = false;
+                Log.d(TAG, "加载数据完成");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mainView.scrollFootToast();
+                MainActivity.bookMoreCount--;
+
+                Log.d(TAG, "加载数据失败，Error:" + e.toString());
+            }
+
+            @Override
+            public void onNext(BookData bookData) {
+                Log.d("123", bookData.getTotal() + "total");
+                mainView.initBookView(bookData);
+            }
+        };
+        Log.d(TAG, tag);
+        HttpService.getInstance().getSearchBookByTag(bookSubscriber, tag,count*20,20);
 
     }
 
@@ -160,5 +183,6 @@ public class MainPresenter {
             return false;
         } else return true;
     }
+
 
 }

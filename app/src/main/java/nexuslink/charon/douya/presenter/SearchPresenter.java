@@ -7,6 +7,8 @@ import nexuslink.charon.douya.bean.book.BookData;
 import nexuslink.charon.douya.bean.book.BookTag;
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.HttpService;
+import nexuslink.charon.douya.ui.activities.MainActivity;
+import nexuslink.charon.douya.ui.activities.SearchResultActivity;
 import nexuslink.charon.douya.view.ISearchView;
 import rx.Subscriber;
 
@@ -25,7 +27,7 @@ public class SearchPresenter {
         this.searchView = searchView;
     }
 
-    public void getMovieInTheaters(String searchString) {
+    public void getSearchMovie(String searchString) {
         searchView.showLoading();
         movieSubscriber = new Subscriber<MovieData>() {
             @Override
@@ -100,6 +102,57 @@ public class SearchPresenter {
             //没在Tag中
             HttpService.getInstance().getSearchBook(bookSubscriber, searchString,0,20);
         }
+    }
+
+    public void getMoreMovie(String searchString,int count) {
+        movieSubscriber = new Subscriber<MovieData>() {
+            @Override
+            public void onCompleted() {
+                Log.d(TAG, "加载数据完成");
+                SearchResultActivity.movieLoading = false;
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG, "加载数据失败"+e.toString());
+                searchView.scrollFootToast();
+                SearchResultActivity.movieMoreCount--;
+            }
+
+            @Override
+            public void onNext(final MovieData data) {
+                searchView.addMovieView(data);
+                Log.d("123", "total" + data.getTotal());
+            }
+        };
+        HttpService.getInstance().getSearchMovie(movieSubscriber,searchString,count*20,20);
+    }
+
+    public void getMoreBook(String tag,int count) {
+        bookSubscriber = new Subscriber<BookData>() {
+            @Override
+            public void onCompleted() {
+                SearchResultActivity.bookLoading = false;
+                Log.d(TAG, "加载数据完成");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                searchView.scrollFootToast();
+                SearchResultActivity.bookMoreCount--;
+
+                Log.d(TAG, "加载数据失败，Error:" + e.toString());
+            }
+
+            @Override
+            public void onNext(BookData bookData) {
+                Log.d("123", bookData.getTotal() + "total");
+                searchView.addBookView(bookData);
+            }
+        };
+        Log.d(TAG, tag);
+        HttpService.getInstance().getSearchBookByTag(bookSubscriber, tag,count*20,20);
+
     }
 
     public void clickMovieItem(int position) {

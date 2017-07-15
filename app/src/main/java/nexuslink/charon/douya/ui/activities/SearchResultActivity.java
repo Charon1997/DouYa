@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import nexuslink.charon.douya.R;
 import nexuslink.charon.douya.bean.book.BookData;
@@ -29,12 +30,17 @@ import static nexuslink.charon.douya.bean.Constant.BOOK_ID;
 import static nexuslink.charon.douya.bean.Constant.BOOK_NAME;
 import static nexuslink.charon.douya.bean.Constant.MOVIE_ID;
 import static nexuslink.charon.douya.bean.Constant.MOVIE_NAME;
+import static nexuslink.charon.douya.bean.Constant.VISIBLE_THRESHOLD;
 
 /**
  * Created by Charon on 2017/4/19.
  */
 
 public class SearchResultActivity extends BaseActivity implements ISearchView {
+    public static boolean movieLoading = false;
+    public static boolean bookLoading = false;
+    public static int bookMoreCount = 0;
+    public static int movieMoreCount = 0;
     private RecyclerView mRecyclerView;
     private Toolbar mToolbar;
     private ProgressBar mProgressBar;
@@ -43,7 +49,8 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
     private int current;
     private SearchPresenter searchPresenter = new SearchPresenter(this);
     private String searchString;
-
+    private MainMovieRecAdapter movieRecAdapter;
+    private MainBookRecAdapter bookRecAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +59,7 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
         searchString = getIntent().getStringExtra("searchContent");
         current = getIntent().getIntExtra("currentNum", -1);
 //        Toast.makeText(this, SearchString, Toast.LENGTH_SHORT).show();
+        Log.d("123", "进入了此界面");
         saveDate();
         initView();
 
@@ -78,7 +86,7 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
         mToolbar = (Toolbar) findViewById(R.id.search_toolbar);
         if (current == 0) {
             mToolbar.setTitle("电影");
-            searchPresenter.getMovieInTheaters(searchString);
+            searchPresenter.getSearchMovie(searchString);
         } else if (current == 1) {
             mToolbar.setTitle("读书");
             searchPresenter.getSearchBook(searchString);
@@ -121,9 +129,17 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
         mRelativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchPresenter.getMovieInTheaters(searchString);
+                if (current == 0)
+                    searchPresenter.getSearchMovie(searchString);
+                else
+                    searchPresenter.getSearchBook(searchString);
             }
         });
+    }
+
+    @Override
+    public void scrollFootToast() {
+        Toast.makeText(this, "主人，你的网络有点不好哟", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -151,12 +167,15 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
 
     @Override
     public void addMovieView(MovieData data) {
-        RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        MainMovieRecAdapter mRecAdapter = new MainMovieRecAdapter(data, this);
-        mRecyclerView.setAdapter(mRecAdapter);
-        mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
+        if (movieMoreCount == 0) {
+            RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
+            mRecyclerView.setLayoutManager(manager);
+            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            movieRecAdapter = new MainMovieRecAdapter(data, this);
+            mRecyclerView.setAdapter(movieRecAdapter);
+        } else movieRecAdapter.addData(data);
+
+        movieRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 searchPresenter.clickMovieItem(position);
@@ -165,6 +184,25 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
             @Override
             public void onItemLongClick(View view, int position) {
 
+            }
+        });
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                int totalItemCount = layoutManager.getItemCount();
+
+                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                Log.d("123", "开始前loading" + movieLoading + "movieMore" + movieMoreCount + "last" + totalItemCount );
+                if (!movieLoading && totalItemCount < (lastVisibleItem + VISIBLE_THRESHOLD) && dy > 0&& movieRecAdapter.ifMore() ) {
+                    //未在加载、且还有3个就要到底了
+                    movieMoreCount++;
+                    Log.d("123", "开始后loading" + movieLoading + "movieMore" + movieMoreCount);
+                    searchPresenter.getMoreMovie(searchString,movieMoreCount);
+                    movieLoading = true;
+                }
             }
         });
     }

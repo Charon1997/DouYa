@@ -23,4 +23,6 @@ public interface ISearchView {
     void addBookView(BookData data);
 
     void showError();
+
+    void scrollFootToast();
 }

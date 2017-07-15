@@ -48,7 +48,7 @@ import static nexuslink.charon.douya.bean.Constant.MOVIE_NAME;
 import static nexuslink.charon.douya.bean.Constant.VISIBLE_THRESHOLD;
 
 public class MainActivity extends BaseActivity implements IMainView {
-    private static int bookMoreCount = 0;
+    public static int bookMoreCount = 0;
     public static int movieMoreCount = 0;
     Vibrator mVibrator;
     private ViewPager mViewPager;
@@ -63,13 +63,17 @@ public class MainActivity extends BaseActivity implements IMainView {
     private MainPresenter mainPresenter = new MainPresenter(this);
     private long mExitTime;
     private ShakeListener mShakeListener;
-    public static boolean loading = false;
-    private MainMovieRecAdapter mRecAdapter = null;
+    public static boolean movieLoading = false;
+    public static boolean bookLoading = false;
+    private MainMovieRecAdapter movieAdapter = null;
+    private MainBookRecAdapter bookAdapter = null;
+    private static String bookTag ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         initView();
     }
 
@@ -89,8 +93,8 @@ public class MainActivity extends BaseActivity implements IMainView {
 
     public String chooseTag() {
         Random random = new Random();
-
-        return BookTag.BOOK_TAG[random.nextInt(BookTag.BOOK_TAG.length)];
+        bookTag = BookTag.BOOK_TAG[random.nextInt(BookTag.BOOK_TAG.length)];
+        return bookTag;
     }
 
     @Override
@@ -99,7 +103,6 @@ public class MainActivity extends BaseActivity implements IMainView {
         search(menu);
         return true;
     }
-
 
     @Override
     public void search(Menu menu) {
@@ -205,6 +208,7 @@ public class MainActivity extends BaseActivity implements IMainView {
     @Override
     public void scrollFootToast() {
         Toast.makeText(this, "主人，网络不太好哟", Toast.LENGTH_SHORT).show();
+        //movieAdapter.deleteProgressBar();
     }
 
     @Override
@@ -276,14 +280,14 @@ public class MainActivity extends BaseActivity implements IMainView {
             final RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
             mRecyclerView1.setLayoutManager(manager);
             mRecyclerView1.setItemAnimator(new DefaultItemAnimator());
-            mRecAdapter = new MainMovieRecAdapter(data, this);
-            mRecyclerView1.setAdapter(mRecAdapter);
+            movieAdapter = new MainMovieRecAdapter(data, this);
+            mRecyclerView1.setAdapter(movieAdapter);
         }
         else
-            mRecAdapter.addData(data);
+            movieAdapter.addData(data);
 
 
-        mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
+        movieAdapter.setOnItemClickListener(new OnRecItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 mainPresenter.clickMovieItem(position);
@@ -303,13 +307,13 @@ public class MainActivity extends BaseActivity implements IMainView {
                 int totalItemCount = layoutManager.getItemCount();
 
                 int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-                Log.d("123", "开始前loading" + loading + "movieMore" + movieMoreCount + "last" + totalItemCount);
-                if (!loading && totalItemCount < (lastVisibleItem + VISIBLE_THRESHOLD) && dy > 0 && mainPresenter.ifMoreMovie(totalItemCount)) {
+                Log.d("123", "开始前loading" + movieLoading + "movieMore" + movieMoreCount + "last" + totalItemCount );
+                if (!movieLoading && totalItemCount < (lastVisibleItem + VISIBLE_THRESHOLD) && dy > 0&& movieAdapter.ifMore() ) {
                     //未在加载、且还有3个就要到底了
                     movieMoreCount++;
-                    Log.d("123", "开始后loading" + loading + "movieMore" + movieMoreCount);
+                    Log.d("123", "开始后loading" + movieLoading + "movieMore" + movieMoreCount);
                     mainPresenter.getMoreMovie(movieMoreCount);
-                    loading = true;
+                    movieLoading = true;
                 }
             }
         });
@@ -317,12 +321,15 @@ public class MainActivity extends BaseActivity implements IMainView {
 
     @Override
     public void initBookView(BookData data) {
-        RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
-        mRecyclerView2.setLayoutManager(manager);
-        mRecyclerView2.setItemAnimator(new DefaultItemAnimator());
-        MainBookRecAdapter mRecAdapter = new MainBookRecAdapter(data, this);
-        mRecyclerView2.setAdapter(mRecAdapter);
-        mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
+        if (bookMoreCount == 0) {
+            RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
+            mRecyclerView2.setLayoutManager(manager);
+            mRecyclerView2.setItemAnimator(new DefaultItemAnimator());
+            bookAdapter = new MainBookRecAdapter(data, this);
+            mRecyclerView2.setAdapter(bookAdapter);
+        } else bookAdapter.addData(data);
+
+        bookAdapter.setOnItemClickListener(new OnRecItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 mainPresenter.clickBookItem(position);
@@ -331,6 +338,26 @@ public class MainActivity extends BaseActivity implements IMainView {
             @Override
             public void onItemLongClick(View view, int position) {
 
+            }
+        });
+
+        mRecyclerView2.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                int totalItemCount = layoutManager.getItemCount();
+
+                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                Log.d("123", "开始前loading" + bookLoading + "bookMore" + bookMoreCount + "last" + totalItemCount);
+                if (!bookLoading && totalItemCount < (lastVisibleItem + VISIBLE_THRESHOLD) && dy > 0 && bookAdapter.ifMore()) {
+                    //未在加载、且还有3个就要到底了
+                    bookMoreCount++;
+                    Log.d("123", "开始后loading" + bookLoading + "movieMore" + bookMoreCount);
+                    mainPresenter.getMoreBook(bookTag,bookMoreCount);
+                    bookLoading = true;
+                }
             }
         });
     }
@@ -356,4 +383,5 @@ public class MainActivity extends BaseActivity implements IMainView {
         super.onStop();
         mShakeListener.stop();
     }
+
 }

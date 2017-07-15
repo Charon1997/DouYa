@@ -41,17 +41,20 @@ public class MainMovieRecAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == TYPE_FOOTER) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_item_main, parent, false);
-            return new FootViewHolder(view);
-        } else if (viewType == TYPE_ITEM) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_main, parent, false);
-            return new MyViewHolder(view);
-        } else if (viewType == TYPE_END) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.end_item_main, parent, false);
-            return new EndViewHolder(view);
+        View view;
+        switch (viewType){
+            case TYPE_ITEM:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_main, parent, false);
+                return new MyViewHolder(view);
+            case TYPE_FOOTER:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_item_main, parent, false);
+                return new FootViewHolder(view);
+            case TYPE_END:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.end_item_main, parent, false);
+                return new EndViewHolder(view);
+            default:
+                return null;
         }
-        return null;
     }
 
     @Override
@@ -155,5 +158,17 @@ public class MainMovieRecAdapter extends RecyclerView.Adapter {
             noMore = true;
         }
         notifyDataSetChanged();
+    }
+
+    public void deleteProgressBar() {
+        Log.d("123", "删除");
+        notifyItemRemoved(getItemCount());
+        notifyItemRangeChanged(getItemCount(), getItemCount());
+    }
+    public boolean ifMore() {
+        if (list.getSubjects().size() == 0 || getItemCount() >= list.getTotal()) {
+            noMore = true;
+            return false;
+        } else return true;
     }
 }
