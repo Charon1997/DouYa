@@ -7,9 +7,9 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
-/**
- * Created by Charon on 2017/7/11.
- */
+///**
+// * Created by Charon on 2017/7/11.
+// */
 
 public interface BookService {
     @GET("v2/book/{id}")

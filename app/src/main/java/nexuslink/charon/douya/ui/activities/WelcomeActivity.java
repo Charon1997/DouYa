@@ -9,13 +9,12 @@ import android.os.Handler;
 
 import nexuslink.charon.douya.R;
 import nexuslink.charon.douya.ui.base.BaseActivity;
-
-/**
- * Created by Charon on 2017/4/18.
- */
+//
+///**
+// * Created by Charon on 2017/4/18.
+// */
 
 public class WelcomeActivity extends BaseActivity {
-    private ImageView mIvLogo;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +35,7 @@ public class WelcomeActivity extends BaseActivity {
     private void initView() {
         AlphaAnimation alphaAnimation = new AlphaAnimation(0,1);
         alphaAnimation.setDuration(2000);
-        mIvLogo = (ImageView) findViewById(R.id.iv_welcome);
+        ImageView mIvLogo = (ImageView) findViewById(R.id.iv_welcome);
         mIvLogo.setAnimation(alphaAnimation);
     }
 }

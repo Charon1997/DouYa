@@ -6,9 +6,9 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-/**
- * Created by Charon on 2017/4/19.
- */
+///**
+// * Created by Charon on 2017/4/19.
+// */
 
 public class MainPagerAdapter extends PagerAdapter {
     private List<View> list_view;
@@ -37,12 +37,5 @@ public class MainPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         container.addView(list_view.get(position), 0);
         return list_view.get(position);
-    }
-
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        View view = (View) object;
-        container.removeView(view);
-        view = null;
     }
 }

@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import nexuslink.charon.douya.R;
 import nexuslink.charon.douya.bean.book.BookData;
@@ -32,9 +31,9 @@ import static nexuslink.charon.douya.bean.Constant.MOVIE_ID;
 import static nexuslink.charon.douya.bean.Constant.MOVIE_NAME;
 import static nexuslink.charon.douya.bean.Constant.VISIBLE_THRESHOLD;
 
-/**
- * Created by Charon on 2017/4/19.
- */
+///**
+// * Created by Charon on 2017/4/19.
+// */
 
 public class SearchResultActivity extends BaseActivity implements ISearchView {
     public static boolean movieLoading = false;
@@ -138,8 +137,11 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
     }
 
     @Override
-    public void scrollFootToast() {
-        Toast.makeText(this, "主人，你的网络有点不好哟", Toast.LENGTH_SHORT).show();
+    public void scrollFootToast(int i) {
+        //Toast.makeText(this, "主人，你的网络有点不好哟", Toast.LENGTH_SHORT).show();
+        if (i == 1) {
+            movieRecAdapter.ifError(true);
+        } else bookRecAdapter.ifError(true);
     }
 
     @Override
@@ -209,12 +211,15 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
 
     @Override
     public void addBookView(BookData data) {
-        RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        MainBookRecAdapter mRecAdapter = new MainBookRecAdapter(data, this);
-        mRecyclerView.setAdapter(mRecAdapter);
-        mRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
+        if (bookMoreCount == 0) {
+            RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
+            mRecyclerView.setLayoutManager(manager);
+            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            bookRecAdapter = new MainBookRecAdapter(data, this);
+            mRecyclerView.setAdapter(bookRecAdapter);
+        } else bookRecAdapter.addData(data);
+
+        bookRecAdapter.setOnItemClickListener(new OnRecItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 searchPresenter.clickBookItem(position);
@@ -223,6 +228,25 @@ public class SearchResultActivity extends BaseActivity implements ISearchView {
             @Override
             public void onItemLongClick(View view, int position) {
 
+            }
+        });
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                int totalItemCount = layoutManager.getItemCount();
+
+                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                Log.d("123", "开始前loading" + bookLoading + "bookMore" + bookMoreCount + "last" + totalItemCount);
+                if (!bookLoading && totalItemCount < (lastVisibleItem + VISIBLE_THRESHOLD) && dy > 0 && bookRecAdapter.ifMore()) {
+                    //未在加载、且还有3个就要到底了
+                    bookMoreCount++;
+                    Log.d("123", "开始后loading" + bookLoading + "movieMore" + bookMoreCount);
+                    searchPresenter.getMoreBook(searchString,bookMoreCount);
+                    bookLoading = true;
+                }
             }
         });
     }

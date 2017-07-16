@@ -24,4 +24,7 @@
     <string name="author_summary">作者简介</string>
     <string name="catalog">目录/试读</string>
     <string name="no_catalog">暂无目录</string>
+    <string name="onErrorNetwork">加载失败,请查看网络状况</string>
+    <string name="noMore">没有更多了哟</string>
+    <string name="director">导演</string>
 </resources>

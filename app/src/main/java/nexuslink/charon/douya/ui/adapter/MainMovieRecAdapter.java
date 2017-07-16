@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -16,18 +15,20 @@ import nexuslink.charon.douya.R;
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.OnRecItemClickListener;
 
-/**
- * Created by Charon on 2017/4/19.
- */
+///**
+// * Created by Charon on 2017/4/19.
+// */
 
 public class MainMovieRecAdapter extends RecyclerView.Adapter {
     private boolean noMore = false;
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_FOOTER = 1;
     private static final int TYPE_END = 2;
+    private static final int TYPE_ERROR = 3;
     private MovieData list; //数据
     private OnRecItemClickListener onRecItemClickListener = null;
     private Context context;
+    private boolean onError;
 
     public MainMovieRecAdapter(MovieData list, Context context) {
         this.list = list;
@@ -42,13 +43,16 @@ public class MainMovieRecAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-        switch (viewType){
+        switch (viewType) {
             case TYPE_ITEM:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_main, parent, false);
                 return new MyViewHolder(view);
             case TYPE_FOOTER:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_item_main, parent, false);
                 return new FootViewHolder(view);
+            case TYPE_ERROR:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.error_item_main, parent, false);
+                return new ErrorViewHolder(view);
             case TYPE_END:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.end_item_main, parent, false);
                 return new EndViewHolder(view);
@@ -94,6 +98,17 @@ public class MainMovieRecAdapter extends RecyclerView.Adapter {
                     return true;
                 }
             });
+
+//            ((MyViewHolder) holder).iv_head.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (switchLamp)
+//                        //现在台灯是开着的
+//                        ((MyViewHolder) holder).tv_director.setText("关");
+//                    else((MyViewHolder) holder).tv_director.setText("开"); //现在台灯是关着的
+//                }
+//            });
+
         }
     }
 
@@ -105,10 +120,12 @@ public class MainMovieRecAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
         if (position + 1 == getItemCount()) {
-            if (noMore){
+            if (noMore) {
                 return TYPE_END;
-            }else
-            return TYPE_FOOTER;
+            } else if (onError) {
+                return TYPE_ERROR;
+            } else
+                return TYPE_FOOTER;
         } else {
             return TYPE_ITEM;
         }
@@ -132,43 +149,45 @@ public class MainMovieRecAdapter extends RecyclerView.Adapter {
     }
 
     private class FootViewHolder extends RecyclerView.ViewHolder {
-        private ProgressBar pb_footer;
 
-        public FootViewHolder(View itemView) {
+        FootViewHolder(View itemView) {
             super(itemView);
-            pb_footer = (ProgressBar) itemView.findViewById(R.id.footer_item_progressBar);
         }
     }
+
     private class EndViewHolder extends RecyclerView.ViewHolder {
-        private TextView  tv_end;
 
-        public EndViewHolder(View itemView) {
+        EndViewHolder(View itemView) {
             super(itemView);
-            tv_end = (TextView) itemView.findViewById(R.id.end_text);
         }
     }
 
-    public void addData(MovieData movieData){
-        for (int i = 0; i < movieData.getSubjects().size();i++) {
+    private class ErrorViewHolder extends RecyclerView.ViewHolder {
+        ErrorViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    public void addData(MovieData movieData) {
+        for (int i = 0; i < movieData.getSubjects().size(); i++) {
             list.getSubjects().add(movieData.getSubjects().get(i));
         }
         list.setCount(movieData.getCount());
         list.setTotal(movieData.getTotal());
-        if (list.getTotal() == getItemCount()-1) {
+        if (list.getTotal() == getItemCount() - 1) {
             noMore = true;
         }
         notifyDataSetChanged();
     }
 
-    public void deleteProgressBar() {
-        Log.d("123", "删除");
-        notifyItemRemoved(getItemCount());
-        notifyItemRangeChanged(getItemCount(), getItemCount());
-    }
     public boolean ifMore() {
         if (list.getSubjects().size() == 0 || getItemCount() >= list.getTotal()) {
             noMore = true;
             return false;
         } else return true;
+    }
+
+    public void ifError(boolean ifError) {
+        onError = ifError;
     }
 }

@@ -22,9 +22,9 @@ import nexuslink.charon.douya.view.IBookInfView;
 import static nexuslink.charon.douya.bean.Constant.BOOK_ID;
 import static nexuslink.charon.douya.bean.Constant.BOOK_NAME;
 
-/**
- * Created by Charon on 2017/7/12.
- */
+///**
+// * Created by Charon on 2017/7/12.
+// */
 
 public class BookInfActivity extends BaseActivity implements IBookInfView {
     private final static String TAG = BookInfActivity.class.getSimpleName();

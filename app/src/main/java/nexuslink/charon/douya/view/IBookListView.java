@@ -1,13 +1,13 @@
 package nexuslink.charon.douya.view;
 
-/**
- * Created by Charon on 2017/4/18.
- */
+///**
+// * Created by Charon on 2017/4/18.
+// */
 
 public interface IBookListView {
-    public void showLoading();
+    void showLoading();
 
-    public void hideLoading();
+    void hideLoading();
 
-    public void clickItem();
+    void clickItem();
 }

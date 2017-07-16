@@ -5,9 +5,9 @@ import android.view.Menu;
 import nexuslink.charon.douya.bean.book.BookData;
 import nexuslink.charon.douya.bean.movie.MovieData;
 
-/**
- * Created by Charon on 2017/4/18.
- */
+///**
+// * Created by Charon on 2017/4/18.
+// */
 
 public interface IMainView {
 
@@ -33,7 +33,7 @@ public interface IMainView {
 
     void shakeHand();
 
-    void scrollFootToast();
+    void scrollFootToast(int i);
 
     void initMoreMovieView();
 }

@@ -3,9 +3,9 @@ package nexuslink.charon.douya.view;
 import nexuslink.charon.douya.bean.book.BookData;
 import nexuslink.charon.douya.bean.movie.MovieData;
 
-/**
- * Created by Charon on 2017/4/18.
- */
+///**
+// * Created by Charon on 2017/4/18.
+// */
 
 public interface ISearchView {
 
@@ -24,5 +24,5 @@ public interface ISearchView {
 
     void showError();
 
-    void scrollFootToast();
+    void scrollFootToast(int i);
 }

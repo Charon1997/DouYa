@@ -16,9 +16,9 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Charon on 2017/7/7.
- */
+///**
+// * Created by Charon on 2017/7/7.
+// */
 
 public class HttpService {
     private static final int DEFAULT_TIMEOUT = 5;

@@ -29,9 +29,9 @@ import nexuslink.charon.douya.view.IMovieInfView;
 import static nexuslink.charon.douya.bean.Constant.MOVIE_ID;
 import static nexuslink.charon.douya.bean.Constant.MOVIE_NAME;
 
-/**
- * Created by Charon on 2017/4/20.
- */
+///**
+// * Created by Charon on 2017/4/20.
+// */
 
 public class MovieInfActivity extends BaseActivity implements IMovieInfView {
     private Toolbar mToolbar;

@@ -4,9 +4,9 @@ package nexuslink.charon.douya.view;
 
 import nexuslink.charon.douya.bean.movie.MovieInf;
 
-/**
- * Created by Charon on 2017/4/18.
- */
+///**
+// * Created by Charon on 2017/4/18.
+// */
 
 public interface IMovieInfView {
     //get信息

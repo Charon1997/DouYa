@@ -24,9 +24,11 @@ public class MainBookRecAdapter extends RecyclerView.Adapter {
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_FOOTER = 1;
     private static final int TYPE_END = 2;
+    private static final int TYPE_ERROR = 3;
     private OnRecItemClickListener onRecItemClickListener = null;
     private Context context;
     private boolean noMore = false;
+    private boolean onError = false;
 
     public MainBookRecAdapter(BookData list, Context context) {
         this.list = list;
@@ -41,15 +43,18 @@ public class MainBookRecAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-        switch (viewType){
+        switch (viewType) {
             case TYPE_ITEM:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.book_item_main, parent, false);
                 return new MyViewHolder(view);
             case TYPE_FOOTER:
-                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_item_main, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_item_main, parent, false);
                 return new FooterViewHolder(view);
+            case TYPE_ERROR:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.error_item_main, parent, false);
+                return new ErrorViewHolder(view);
             case TYPE_END:
-                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.end_item_main, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.end_item_main, parent, false);
                 return new EndViewHolder(view);
             default:
                 return null;
@@ -92,14 +97,16 @@ public class MainBookRecAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return list.getBooks().size() == 0?0:list.getBooks().size()+1;
+        return list.getBooks().size() == 0 ? 0 : list.getBooks().size() + 1;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position + 1  == getItemCount()){
-            if (noMore){
+        if (position + 1 == getItemCount()) {
+            if (noMore) {
                 return TYPE_END;
+            } else if (onError) {
+                return TYPE_ERROR;
             } else return TYPE_FOOTER;
         } else return TYPE_ITEM;
     }
@@ -120,14 +127,19 @@ public class MainBookRecAdapter extends RecyclerView.Adapter {
     }
 
     private class FooterViewHolder extends RecyclerView.ViewHolder {
-
-        public FooterViewHolder(View itemView) {
+        FooterViewHolder(View itemView) {
             super(itemView);
         }
     }
 
     private class EndViewHolder extends RecyclerView.ViewHolder {
-        public EndViewHolder(View itemView) {
+        EndViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    private class ErrorViewHolder extends RecyclerView.ViewHolder {
+        ErrorViewHolder(View itemView) {
             super(itemView);
         }
     }
@@ -146,6 +158,10 @@ public class MainBookRecAdapter extends RecyclerView.Adapter {
 
     public boolean ifMore() {
         return getItemCount() < list.getTotal();
+    }
+
+    public void ifError(boolean ifError) {
+        onError = ifError;
     }
 }
 

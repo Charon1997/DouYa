@@ -11,8 +11,6 @@
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-
-        android:foreground="?android:attr/selectableItemBackgroundBorderless"
         app:cardCornerRadius="4dp"
         app:contentPadding="8dp"
         >

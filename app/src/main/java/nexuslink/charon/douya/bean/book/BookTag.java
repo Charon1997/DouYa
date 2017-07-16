@@ -3,9 +3,9 @@ package nexuslink.charon.douya.bean.book;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by Charon on 2017/7/12.
- */
+///**
+// * Created by Charon on 2017/7/12.
+// */
 
 public class BookTag {
     public final static String[] BOOK_TAG = {"小说", "外国文学", "文学", "随笔", "中国文学", "经典", "日本文学", "散文", "村上春树", "童话", "诗歌",

@@ -2,9 +2,9 @@ package nexuslink.charon.douya.bean.book;
 
 import java.util.List;
 
-/**
- * Created by Charon on 2017/7/11.
- */
+///**
+// * Created by Charon on 2017/7/11.
+// */
 
 public class BookData {
 

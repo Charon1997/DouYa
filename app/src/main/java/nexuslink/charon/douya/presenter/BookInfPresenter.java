@@ -9,9 +9,9 @@ import nexuslink.charon.douya.biz.HttpService;
 import nexuslink.charon.douya.view.IBookInfView;
 import rx.Subscriber;
 
-/**
- * Created by Charon on 2017/7/13.
- */
+///**
+// * Created by Charon on 2017/7/13.
+// */
 
 public class BookInfPresenter {
     private final static String TAG = MainPresenter.class.getSimpleName();

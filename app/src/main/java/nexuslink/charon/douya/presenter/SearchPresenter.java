@@ -7,14 +7,13 @@ import nexuslink.charon.douya.bean.book.BookData;
 import nexuslink.charon.douya.bean.book.BookTag;
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.HttpService;
-import nexuslink.charon.douya.ui.activities.MainActivity;
 import nexuslink.charon.douya.ui.activities.SearchResultActivity;
 import nexuslink.charon.douya.view.ISearchView;
 import rx.Subscriber;
 
-/**
- * Created by Administrator on 2017/7/7.
- */
+///**
+// * Created by Administrator on 2017/7/7.
+// */
 
 public class SearchPresenter {
     private final static String TAG = MainPresenter.class.getSimpleName();
@@ -115,8 +114,9 @@ public class SearchPresenter {
             @Override
             public void onError(Throwable e) {
                 Log.d(TAG, "加载数据失败"+e.toString());
-                searchView.scrollFootToast();
+                searchView.scrollFootToast(1);
                 SearchResultActivity.movieMoreCount--;
+                SearchResultActivity.movieLoading = false;
             }
 
             @Override
@@ -128,7 +128,7 @@ public class SearchPresenter {
         HttpService.getInstance().getSearchMovie(movieSubscriber,searchString,count*20,20);
     }
 
-    public void getMoreBook(String tag,int count) {
+    public void getMoreBook(String searchString,int count) {
         bookSubscriber = new Subscriber<BookData>() {
             @Override
             public void onCompleted() {
@@ -138,9 +138,9 @@ public class SearchPresenter {
 
             @Override
             public void onError(Throwable e) {
-                searchView.scrollFootToast();
+                searchView.scrollFootToast(2);
                 SearchResultActivity.bookMoreCount--;
-
+                SearchResultActivity.bookLoading = false;
                 Log.d(TAG, "加载数据失败，Error:" + e.toString());
             }
 
@@ -150,9 +150,14 @@ public class SearchPresenter {
                 searchView.addBookView(bookData);
             }
         };
-        Log.d(TAG, tag);
-        HttpService.getInstance().getSearchBookByTag(bookSubscriber, tag,count*20,20);
 
+        if (BookTag.getBookTagList().contains(searchString)){
+            //在Tag中
+            HttpService.getInstance().getSearchBookByTag(bookSubscriber,searchString,20*count,20);
+        }else {
+            //没在Tag中
+            HttpService.getInstance().getSearchBook(bookSubscriber, searchString,20*count,20);
+        }
     }
 
     public void clickMovieItem(int position) {

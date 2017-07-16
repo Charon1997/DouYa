@@ -1,6 +1,6 @@
 package nexuslink.charon.douya.presenter;
 
-import android.graphics.Movie;
+
 import android.os.Handler;
 import android.util.Log;
 
@@ -8,13 +8,12 @@ import nexuslink.charon.douya.bean.book.BookData;
 import nexuslink.charon.douya.bean.movie.MovieData;
 import nexuslink.charon.douya.biz.HttpService;
 import nexuslink.charon.douya.ui.activities.MainActivity;
-import nexuslink.charon.douya.ui.adapter.MainMovieRecAdapter;
 import nexuslink.charon.douya.view.IMainView;
 import rx.Subscriber;
 
-/**
- * Created by Charon on 2017/7/7.
- */
+///**
+// * Created by Charon on 2017/7/7.
+// */
 
 public class MainPresenter {
     public static int completed = 0;
@@ -84,8 +83,10 @@ public class MainPresenter {
             @Override
             public void onError(Throwable e) {
                 Log.d(TAG, "加载数据失败"+e.toString());
-                mainView.scrollFootToast();
+                mainView.scrollFootToast(1);
                 MainActivity.movieMoreCount--;
+                MainActivity.movieLoading = false;
+
             }
 
             @Override
@@ -106,9 +107,9 @@ public class MainPresenter {
 
             @Override
             public void onError(Throwable e) {
-                mainView.scrollFootToast();
+                mainView.scrollFootToast(2);
                 MainActivity.bookMoreCount--;
-
+                MainActivity.bookLoading = false;
                 Log.d(TAG, "加载数据失败，Error:" + e.toString());
             }
 
@@ -175,14 +176,6 @@ public class MainPresenter {
         mainView.toBookInf(id, name);
     }
 
-
-
-    public boolean ifMoreMovie(int position) {
-        if (myMovieData.getTotal() - myMovieData.getSubjects().size() <= 0) {
-            //总数-当前数量等于0
-            return false;
-        } else return true;
-    }
 
 
 }

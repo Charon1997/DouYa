@@ -67,7 +67,7 @@ public class MainActivity extends BaseActivity implements IMainView {
     public static boolean bookLoading = false;
     private MainMovieRecAdapter movieAdapter = null;
     private MainBookRecAdapter bookAdapter = null;
-    private static String bookTag ;
+    private static String bookTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +106,7 @@ public class MainActivity extends BaseActivity implements IMainView {
 
     @Override
     public void search(Menu menu) {
+
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         final SearchView searchView =
@@ -113,7 +114,10 @@ public class MainActivity extends BaseActivity implements IMainView {
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
         searchView.setSubmitButtonEnabled(true);//设置是否显示搜索按钮
-        searchView.setQueryHint("输入想要搜索");//设置提示信息
+
+        searchView.setQueryHint("输入想要搜索的内容");
+
+
         searchView.setIconifiedByDefault(true);//设置搜索默认为图标
         //点击事件
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -206,9 +210,11 @@ public class MainActivity extends BaseActivity implements IMainView {
     }
 
     @Override
-    public void scrollFootToast() {
-        Toast.makeText(this, "主人，网络不太好哟", Toast.LENGTH_SHORT).show();
-        //movieAdapter.deleteProgressBar();
+    public void scrollFootToast(int i) {
+        //Toast.makeText(this, "主人，网络不太好哟", Toast.LENGTH_SHORT).show();
+        if (i == 1) {
+            movieAdapter.ifError(true);
+        } else bookAdapter.ifError(true);
     }
 
     @Override
@@ -282,8 +288,7 @@ public class MainActivity extends BaseActivity implements IMainView {
             mRecyclerView1.setItemAnimator(new DefaultItemAnimator());
             movieAdapter = new MainMovieRecAdapter(data, this);
             mRecyclerView1.setAdapter(movieAdapter);
-        }
-        else
+        } else
             movieAdapter.addData(data);
 
 
@@ -307,9 +312,10 @@ public class MainActivity extends BaseActivity implements IMainView {
                 int totalItemCount = layoutManager.getItemCount();
 
                 int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-                Log.d("123", "开始前loading" + movieLoading + "movieMore" + movieMoreCount + "last" + totalItemCount );
-                if (!movieLoading && totalItemCount < (lastVisibleItem + VISIBLE_THRESHOLD) && dy > 0&& movieAdapter.ifMore() ) {
+                Log.d("123", "开始前loading" + movieLoading + "movieMore" + movieMoreCount + "last" + totalItemCount);
+                if (!movieLoading && totalItemCount < (lastVisibleItem + VISIBLE_THRESHOLD) && dy > 0 && movieAdapter.ifMore()) {
                     //未在加载、且还有3个就要到底了
+                    movieAdapter.ifError(false);
                     movieMoreCount++;
                     Log.d("123", "开始后loading" + movieLoading + "movieMore" + movieMoreCount);
                     mainPresenter.getMoreMovie(movieMoreCount);
@@ -353,9 +359,10 @@ public class MainActivity extends BaseActivity implements IMainView {
                 Log.d("123", "开始前loading" + bookLoading + "bookMore" + bookMoreCount + "last" + totalItemCount);
                 if (!bookLoading && totalItemCount < (lastVisibleItem + VISIBLE_THRESHOLD) && dy > 0 && bookAdapter.ifMore()) {
                     //未在加载、且还有3个就要到底了
+                    bookAdapter.ifError(false);
                     bookMoreCount++;
                     Log.d("123", "开始后loading" + bookLoading + "movieMore" + bookMoreCount);
-                    mainPresenter.getMoreBook(bookTag,bookMoreCount);
+                    mainPresenter.getMoreBook(bookTag, bookMoreCount);
                     bookLoading = true;
                 }
             }

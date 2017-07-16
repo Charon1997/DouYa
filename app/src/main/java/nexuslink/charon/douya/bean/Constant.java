@@ -1,8 +1,8 @@
 package nexuslink.charon.douya.bean;
 
-/**
- * Created by Administrator on 2017/7/14.
- */
+///**
+// * Created by Administrator on 2017/7/14.
+// */
 
 public class Constant {
     public static  final int VISIBLE_THRESHOLD = 3;

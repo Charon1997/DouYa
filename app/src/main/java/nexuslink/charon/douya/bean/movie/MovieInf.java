@@ -2,9 +2,9 @@ package nexuslink.charon.douya.bean.movie;
 
 import java.util.List;
 
-/**
- * Created by Charon on 2017/7/8.
- */
+///**
+// * Created by Charon on 2017/7/8.
+// */
 
 public class MovieInf {
 

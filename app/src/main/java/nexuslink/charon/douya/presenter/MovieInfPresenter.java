@@ -9,9 +9,9 @@ import nexuslink.charon.douya.biz.HttpService;
 import nexuslink.charon.douya.view.IMovieInfView;
 import rx.Subscriber;
 
-/**
- * Created by Charon on 2017/7/8.
- */
+///**
+// * Created by Charon on 2017/7/8.
+// */
 
 public class MovieInfPresenter {
     private final static String TAG = MainPresenter.class.getSimpleName();
