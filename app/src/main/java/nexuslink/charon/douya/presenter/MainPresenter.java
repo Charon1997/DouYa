@@ -16,7 +16,7 @@ import rx.Subscriber;
 // */
 
 public class MainPresenter {
-    public static int completed = 0;
+    public static int completed = 0;//两个都完成时，则隐藏loading
     private final static String TAG = MainPresenter.class.getSimpleName();
     private IMainView mainView;
     private Subscriber<MovieData> movieSubscriber;

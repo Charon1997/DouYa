@@ -98,17 +98,6 @@ public class MainMovieRecAdapter extends RecyclerView.Adapter {
                     return true;
                 }
             });
-
-//            ((MyViewHolder) holder).iv_head.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (switchLamp)
-//                        //现在台灯是开着的
-//                        ((MyViewHolder) holder).tv_director.setText("关");
-//                    else((MyViewHolder) holder).tv_director.setText("开"); //现在台灯是关着的
-//                }
-//            });
-
         }
     }
 

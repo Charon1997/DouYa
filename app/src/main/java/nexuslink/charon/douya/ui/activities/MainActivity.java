@@ -192,13 +192,17 @@ public class MainActivity extends BaseActivity implements IMainView {
     @Override
     public void shakeHand() {
         mShakeListener = new ShakeListener(this);
+
         mShakeListener.setOnShakeListener(new OnShakeListener() {
             @Override
             public void onShake() {
                 mShakeListener.stop();
-                startVibrate();
-                mainPresenter.getBookItem(chooseTag());
-                MainPresenter.completed = 1;
+
+                if (mViewPager.getCurrentItem() == 1) {
+                    startVibrate();
+                    mainPresenter.getBookItem(chooseTag());
+                    MainPresenter.completed = 1;
+                }
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -207,6 +211,7 @@ public class MainActivity extends BaseActivity implements IMainView {
                 }, 1000);
             }
         });
+
     }
 
     @Override
